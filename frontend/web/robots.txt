@@ -1,0 +1,4 @@
+User-Agent: *
+Disallow: /cart/
+Disallow: /Автотовары/
+Sitemap: http://vashashina.dp.ua/sitemap.xml

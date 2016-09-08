@@ -1,0 +1,661 @@
+
+
+@import 'grid.less';
+@import 'settings.less';
+
+.container{
+	max-width: 970px !important; 
+}
+
+	 @font-face {
+    font-family: "PF BeauSans Pro"; /* Имя шрифта */
+    src: url(fonts/pfbeausanspro-sebold.ttf); /* Путь к файлу со шрифтом */
+   }
+.marginTopBottom10{
+	margin-top: 10px;
+	margin-bottom: 10px
+}
+.marginTopBottom10_20{
+	margin-top: 10px;
+	margin-bottom: 20px
+}
+
+.margin-top-lg{
+	margin-top: 40px;
+} 
+.margin-bottom-lg{
+	margin-bottom:40px;
+}
+
+.marginCenter{
+	margin: 0 auto;
+}
+
+.center{
+	text-align: center;
+}
+
+.clear{
+	clear: both;
+}   
+
+img.clear{
+	display: block;
+}
+
+label > span.badge{
+ background: #63bdbb none repeat scroll 0 0;
+    font-size: 14px;
+    position: relative;
+    top:-10px;
+    left:5px;
+}
+
+body {
+
+	padding-top: 50px;
+	background: url("../images/top_bg.png") 0 50px no-repeat;
+	  overflow-x:hidden;
+	  font-family: PF BeauSans Pro;
+	
+}
+
+
+
+/* top navigation  */
+#topMenu{
+	border-bottom:3px solid #fe6342;
+/*	height: 55px;*/
+}
+#navTopMenu > li > a{
+font-family: PF BeauSans Pro;
+font-weight: bold;
+text-transform: uppercase;
+
+}
+
+#navTopMenu > li.active > a,
+#navTopMenu > li > a:hover{
+color:#fe6342;
+background: url('../images/orange_circle.png') 50% 5px no-repeat;
+}
+/* end top navigation  */
+
+.logo{
+	
+background: url('../images/logo.png') 0 0 no-repeat;
+margin: 15px 0px;
+}
+.logo > h1,
+h1.fancy
+ {
+	font-family: "PF BeauSans Pro";
+	font-size:33px;
+	font-weight:bold;
+	font-style: italic;
+	color: #fffefe;
+	text-transform: uppercase;
+}
+#logoPhones{
+	color:#ffffff;
+	border-bottom: 1px dashed #ffffff;
+	width: 140px;
+	font-family: "PF BeauSans Pro";
+	font-style: italic;
+	font-weight: bold;
+	font-size: 16px;
+	opacity:0.8;
+	position: relative;
+}
+#logoPhonesArrow{
+	position: absolute;
+	top:10px;
+	right: 0;
+	opacity:0.8;
+	width:13px;
+	height: 8px;
+	background: url('../images/icons/bottom_arrow.png') no-repeat;
+}
+
+#iNeed{
+
+
+}
+
+.lineDiv{
+	overflow: hidden;
+}
+
+.fancy span {
+  display: inline-block;
+  position: relative;  
+}
+.fancy span:before,
+.fancy span:after {
+  content: "";
+  position: absolute;
+  height: 4px;
+  background-color: #fffefe;
+/*  border-bottom: 2px solid white;
+  border-top: 2px solid white;*/
+  top: 18px;
+  width: 350%;
+}
+.fancy span:before {
+  right: 100%;
+  margin-right: 5px;
+}
+.fancy span:after {
+  left: 100%;
+  margin-left: 5px;
+}
+h1.fancy{
+	text-align:center;
+		font-style: normal;
+		font-weight: bold;
+		color:#ffffff;
+	font-size: 36px;
+		font-family: "PF BeauSans Pro";
+	text-transform: uppercase;
+	margin: 0;
+
+
+}
+.fancy.orange span:before,
+.fancy.orange span:after {
+	 background-color: #fe6342;
+}
+h1.fancy.orange{
+	color: #fe6342;
+}
+/*search*/
+#searchForm{
+	margin-top:35px;
+}
+#searchRow{
+	width:100%;
+	position: relative;
+}
+#searchIcon,
+#searchInput {
+	border: 0 ;
+	
+ }
+  #searchInput{
+ 	border-bottom: 2px solid transparent;
+ 	box-shadow:0;
+ }
+ 
+ #searchInput:focus {
+ 	border-bottom: 2px solid #fe6342;
+ 	 	box-shadow:none;
+ 	
+ }
+   #searchInput::-webkit-input-placeholder  {
+opacity:0.5;
+  }
+  #searchInput::-moz-placeholder  {opacity:0.5;}
+  #searchInput:-moz-placeholder  {opacity:0.5;}
+  #searchInput:-ms-input-placeholder   {opacity:0.5;}
+ 
+  #searchInput:focus::-webkit-input-placeholder  {
+opacity:0.5;
+  }
+  #searchInput:focus::-moz-placeholder  {opacity:1;}
+  #searchInput:focus:-moz-placeholder  {opacity:1;}
+  #searchInput:focus:-ms-input-placeholder   {opacity:1;}
+
+         
+
+#searchIcon{
+	background: url("../images/icons/search_icon.png") 5px 5px no-repeat #ffffff;
+	width:30px;
+	height: 30px;
+	position:absolute;
+	right: 5px;
+	z-index: 5;
+	padding-right:0; 
+}
+ 
+/* end search*/
+
+/*shopping Cart*/
+#shoppingCart{
+	margin-top:35px;
+	height: 31px;
+	margin-left:90px;
+	
+}
+#cartIcon{
+	width:32px;
+	height:31px;
+	background: url("../images/icons/shopping_cart.png") 0 0 no-repeat transparent;
+	position:relative;
+	float: left;
+}
+#cartIcon > #cartIconBtn{
+	width: 32px;
+	height: 31px;
+	display: block;
+	background: transparent;
+	border: 0;
+	cursor: pointer;
+	padding: 0;
+	margin: 0;
+	z-index: 250;
+	position: relative;
+}
+#cartIcon > span.badge{
+	background-color:#fe6342;
+	position: absolute;
+	top:-15px;
+	right:-25px;
+}
+#cartSum{
+	position: relative;
+	text-transform: uppercase;
+	color: #fffefe;
+	font-weight: bold;
+	font-family: "PF BeauSans Pro";
+	font-size: 16px;
+	top:5px;
+	left:5px;
+}
+#popCartItems{
+	width: 310px;
+
+}
+
+.cartRow {
+    display: table;
+    width: 100%;
+    border-bottom:1px dashed #c2c2c2;
+}
+
+h5.cartItem{
+	color:#63bdbb;
+	text-decoration:underline;
+	font-weight:bold;
+	text-transform:uppercase;
+}
+.cartTdInput{
+	width:2em;
+}
+.textCartTd{
+width:95%;
+
+}
+.removeButtonCartTd{
+	width: 5%;
+
+}
+
+tr.cartRow > td.removeButtonCartTd{
+		vertical-align: middle;
+}
+
+.textCartTd > p {
+    font-size: 12px;
+     font-family: PF BeauSans Pro;
+}
+
+.orange{
+	color: #fe6342;
+}
+
+#totalSum{
+	text-transform: uppercase;
+
+}
+div.cartTotal > div > p{
+	  font-size: 14px;
+     font-family: PF BeauSans Pro;
+     text-transform: uppercase;
+     	color:#c2c2c2;
+}
+
+.btn.btn-muted,
+.btn.btn-orange,
+ {
+    background: #423843 none repeat scroll 0 0;
+    color: white;
+    text-transform: uppercase;
+ /*   font-size: 12px;*/
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.btn.btn-orange{
+	 background-color: #fe6342;
+}
+.btn.btn-orange:hover{
+	 background-color: #f94e2a;
+}
+
+.cTText{
+	float: left;
+}
+.cTButton{
+	float: right;
+}
+/*end shopping Cart*/
+
+/*select Area*/
+.selectDiv{
+	min-height:410px;
+	max-width: 465px;
+/*	width: 445px;*/
+	background: #ffffff;
+/*	margin: 0 auto;*/
+	float:none;
+}
+
+ul.selectType{
+	margin: 20px 0 10px 0;
+}
+
+ul.selectType > li{
+	padding:0;
+	margin:0 7px 0 0;
+	font-family:"Arial";
+	font-weight: bold;
+}
+ul.selectType > li > a{
+ padding: 0; 
+background: transparent;
+color: #63bdbb;
+border-bottom: 1px dashed #63bdbb; 
+}
+ul.selectType > li > a:hover{
+
+background: transparent;
+
+}
+
+ul.selectType > li > a.first{
+	border-bottom: 0;
+}
+
+ul.selectType > li > a > span.badge{
+	background: #63bdbb;
+	font-size: 14px;
+}
+
+img.marginTop {
+    margin-top: 14px;
+}
+
+select.dropdown {
+width: 100%;
+   height: 36px;
+   overflow: hidden;
+   background: url(../images/icons/select_button.png) no-repeat right;
+   border: 1px solid #dedede;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+    }
+select.dropdown.last{
+	width: 123px;
+}
+.selectSeasonDiv{
+	position: relative;
+	height:inherit;
+}
+.selectManufacturer{
+/*	width: 200px;*/
+}
+label.selectToDLabel{
+	margin: 0;
+}
+a.seasonIcon{
+	display: block;
+	float: left;
+	width:30px;
+	height: 30px;
+	margin: 0 15px 15px 15px;
+}
+#summerA{
+	background: url('../images/icons/summer.png') no-repeat;
+	margin-left:0; 
+}
+#summerA:hover,
+#summerA:focus,
+#summerA.active,
+{
+	background: url('../images/icons/summer_active.png') no-repeat;
+	margin-left:0; 
+}
+
+#winterA{
+	background: url('../images/icons/winter.png') no-repeat;
+}
+
+#winterA:hover,
+#winterA:focus,
+#winterA.active,
+{
+	background: url('../images/icons/winter_active.png') no-repeat;
+}
+
+#allSeasonA{
+	background: url('../images/icons/all_season.png') no-repeat;
+}
+
+#allSeasonA:hover,
+#allSeasonA:focus,
+#allSeasonA.active,
+{
+	background: url('../images/icons/all_season_active.png') no-repeat;
+}
+
+.selectManufacturer > select.dropdown{
+	/*width:200px;*/
+}
+/* price Slider*/
+.cena{
+margin: 0;
+	width:80px;
+}
+.cena > input{
+	width:inherit;
+}
+#tirePriceSlider,
+#diskPriceSlider{
+	margin-left: 10px;
+	width:55%;
+	margin-top: 7px;
+}
+#tirePriceSlider > div.slider-track > div.slider-handle,
+#diskPriceSlider > div.slider-track > div.slider-handle
+{
+	 background-image: linear-gradient(to bottom, #ebebeb 0px, #fff 100%);
+    border: 1px solid #dedede;
+}
+
+#tirePriceSlider > div.slider-track > div.slider-selection,
+#diskPriceSlider > div.slider-track > div.slider-selection{
+	 background-image: linear-gradient(to bottom, #63bdbb 0px, #63bdbb 100%);
+    
+}
+
+#tirePriceSlider > div.slider-track > {
+	 background-image: linear-gradient(to bottom, #ebebeb 0px, #ebebeb 100%);
+    
+}
+.arrow_box {
+	position: relative;
+	background: #ffffff;
+	border: 2px solid #dedede;
+	width:auto;
+	display: inline-block;
+	margin-left:20px;
+	font-size:12px;
+	padding: 2px 15px;
+	top: 10px;
+}
+.arrow_box:after, .arrow_box:before {
+	right: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.arrow_box:after {
+	border-color: rgba(255, 255, 255, 0);
+	border-right-color: #ffffff;
+	border-width: 10px;
+	margin-top: -10px;
+}
+.arrow_box:before {
+	border-color: rgba(222, 222, 222, 0);
+	border-right-color: #dedede;
+	border-width: 13px;
+	margin-top: -13px;
+}
+
+.selectCar,
+.selectCar > form > div,
+.selectCar > form > div > div.form-group{
+	background-color: #fff;
+	min-height:80px;
+	margin-top:10px;
+	height: auto;
+	overflow:hidden;
+/*	max-width: 940px;*/
+}
+.selectCar > form > div > div > select.dropdown{
+	min-width: 160px;
+}
+#carMark{
+	max-width: 140px;
+}
+
+#findByCarButton{
+	position: relative;
+	top:18px;
+	left:50%;
+	display:block;
+}
+
+/*end select Area*/
+
+/* Content*/
+#indexContent{
+	width: 100%;
+	background-color: #fff;
+}
+
+.propImg {
+    display: inline-block;
+    float: left;
+
+}
+.propText{
+ font-family: "PF BeauSans Pro";
+ 	color:#707070;
+ 	margin-left: 10px;
+	
+}
+.propText > h3{
+	font-size: 21px;
+	font-style: italic;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-decoration:underline;
+}
+.propText > h3.odd{
+		color:#67bfbd;
+}
+.propText p{
+	font-size:13px;
+}
+/* end of Content*/
+
+/*footer*/
+#footer{
+	background-color:#423843;
+		color:#fffefe;
+		font-family: "PF BeauSans Pro";
+			text-transform: uppercase;
+}
+.footerMenuTitle{
+
+	border-bottom: 1px solid #fffefe;
+	line-height: 2em;
+	text-transform: uppercase;
+}
+.footerMenu > li > a{
+	color:#fffefe;
+
+padding: 3px;
+}
+.footerMenu > li.active > a,
+.footerMenu > li > a:hover{
+	background:transparent;
+	text-decoration: underline;
+}
+ul.footer-nav{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+ul.footer-nav.last{
+	margin-top:30px;
+}
+ul.social{
+	margin: 0 auto;
+	width:420px;
+	float:none;
+}
+ul.social > li{
+	margin: 5px 15px;
+	
+}
+ul.social > li > a {
+	display: inline-block;
+	width:52px;
+	height: 52px;
+
+}
+ul.nav.social > li > a:hover{
+
+		background-color:#423843;
+}
+a.footer-icon-google{
+	background:url("../images/icons/google.png") no-repeat; 
+}
+a.footer-icon-google:hover{
+	background:url("../images/icons/google_hover.png") no-repeat ; 
+	
+}
+a.footer-icon-twitter{
+	background:url("../images/icons/twitter.png") no-repeat; 
+}
+a.footer-icon-twitter:hover{
+	background:url("../images/icons/twitter_hover.png") no-repeat ; 
+	
+}
+a.footer-icon-facebook{
+	background:url("../images/icons/facebook.png") no-repeat; 
+}
+a.footer-icon-facebook:hover{
+	background:url("../images/icons/facebook_hover.png") no-repeat ; 
+	
+}
+a.footer-icon-vkontakte{
+	background:url("../images/icons/vkontakte.png") no-repeat; 
+}
+a.footer-icon-vkontakte:hover{
+	background:url("../images/icons/vkontakte_hover.png") no-repeat ; 
+	
+}
+a.footer-icon-youtube{
+	background:url("../images/icons/youtube.png") no-repeat; 
+}
+a.footer-icon-youtube:hover{
+	background:url("../images/icons/youtube_hover.png") no-repeat ; 
+	
+}

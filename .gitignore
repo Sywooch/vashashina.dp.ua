@@ -1,0 +1,68 @@
+# yii console command
+/yii
+
+# phpstorm project files
+.idea
+
+# netbeans project files
+nbproject
+
+# zend studio for eclipse project files
+.buildpath
+.project
+.settings
+
+# windows thumbnail cache
+Thumbs.db
+
+# composer vendor dir
+/vendor
+
+# composer itself is not needed
+composer.phar
+
+# Mac DS_Store Files
+.DS_Store
+
+# phpunit itself is not needed
+phpunit.phar
+# local phpunit config
+/phpunit.xml
+
+composer.lock
+init
+.bowerrc
+       
+.htaccess
+LICENSE.md
+README.md
+backend/web/css/__history/
+backend/web/libs/combobox/__history/
+frontend/web/themes/classic/js/jquery/
+frontend/web/themes/*/css/__history/
+frontend/web/themes/*/fonts/
+frontend/web/themes/*/images/
+frontend/web/css/__history/
+frontend/web/fonts/
+frontend/web/images/
+frontend/web/assets/
+backend/web/assets/
+backend/web/tmp/
+frontend/widgets/*/assets/css/__history/
+backend/widgets/*/assets/css/__history/
+frontend/widgets/callback/assets/css/__history/
+frontend/widgets/carousel/assets/css/__history/
+frontend/widgets/findbyparams/assets/css/__history/
+frontend/widgets/flexslider/assets/css/__history/
+frontend/widgets/product/assets/css/__history/
+frontend/widgets/topProducts/assets/css/__history/
+frontend/widgets/yashare/assets/css/__history/
+_gsdata_/
+node_modules/
+tests/
+uploads/
+
+*.jpg
+*.png
+*.gif
+*.jpeg
