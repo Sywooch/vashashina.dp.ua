@@ -20,7 +20,15 @@ class YaShare extends Widget
 
     public function init()
     {
+      if (!strpos($this->url, 'http')){
+          $this->url = Yii::$app->request->hostinfo.$this->url;
+      }
+      if ($this->image && !strpos($this->image, 'http')){
+          $this->image = Yii::$app->request->hostinfo.$this->image;
+      }
       
+	  $this->prepareDesc();
+	  
         parent::init();
         
     }
@@ -33,6 +41,10 @@ class YaShare extends Widget
         return $this->render($this->view,$data);
     }/**/
     
+	private function prepareDesc(){
+		$this->desc = substr($this->desc, 0, strrpos(substr($this->desc, 0, 150), ' '));
+		$this->desc = strip_tags($this->desc);
+	}/**/
   
     
 }/* end of Widget*/

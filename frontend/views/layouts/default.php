@@ -35,6 +35,7 @@ echo Nav::widget([
         ['label' => Yii::t('app','Guarantee'), 'url' => ['/garantia']],
         ['label' => Yii::t('app','Payment').'&'.Yii::t('app','Delivery'), 'url' => ['/oplata']],
         ['label' => Yii::t('app','News'), 'url' => ['/news']],
+        ['label' => Yii::t('app','Articles'), 'url' => ['/articles']],
         ['label' => Yii::t('app','Autodictionary'), 'url' => ['/avtoslovarik']],
         ['label' => Yii::t('app','Contacts'), 'url' => ['/contacts']],
     //    ['label' => 'Акции', 'url' => ['/site/news']],

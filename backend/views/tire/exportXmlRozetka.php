@@ -12,9 +12,9 @@ $file = "VashaShinaXmlRozetka.xml";
 
 <yml_catalog date="<?php echo date('Y-m-d H:i');?>">
 <shop>
-<name>VashaShina.dp.ua</name>
-<company>VashaShina.dp.ua</company>
-<url>vashashina.dp.ua</url>
+<name><?=$name;?></name>
+<company><?=$company;?></company>
+<url><?=$url;?></url>
 <currencies>
     <?php if($currencies !== null && $currencies > 0):?>
       <?php foreach ($currencies as $key => $currency) :?>

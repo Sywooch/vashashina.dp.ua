@@ -45,6 +45,7 @@ class ArticleSearch extends Article
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+              'sort'=> ['defaultOrder' => ['created'=>SORT_DESC]]
         ]);
 
         $this->load($params);

@@ -20,7 +20,8 @@ class ShortArticles extends Widget
     public function run()
     {
         $data = [];
-        $data['articles'] = Article::find()->select('id,title,alias,image,created')->orderBy(['created'=>'desc'])->limit($this->limit)->all();
+        $data['articles'] = Article::find()->select('id,title,alias,text,created')
+                ->orderBy('created DESC')->limit($this->limit)->all();
         return $this->render('index',$data);
     }
 }/* end of Widget*/

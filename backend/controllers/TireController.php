@@ -9,6 +9,7 @@ use common\models\tires\Tire;
 use backend\models\search\tires\TireSearch;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use yii\helpers\ArrayHelper;
 
 
 /**
@@ -38,16 +39,14 @@ class TireController extends AdminController
       
         $searchModel = new TireSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        
-         
-                
-                        
-       
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'tireModels' =>$this->getTireModels()
+            'tireModels' =>$this->getTireModels(),
+            'tireWidths' =>$this->getTireWidths(),
+            'tireProfiles' =>$this->getTireProfiles(),
+            'tireDiameters' =>$this->getTireDiameters(),
         ]);
     }
 
@@ -240,16 +239,20 @@ class TireController extends AdminController
     }/**/
     
     public function actionExport(){
+        set_time_limit(1800);
         $format = Yii::$app->request->post('format');
         $platform = Yii::$app->request->post('platform');
+        $siteUrl = Yii::$app->request->post('siteUrl');
+        $siteName = Yii::$app->request->post('siteName');
+        $companyName = Yii::$app->request->post('companyName');
         $this->items = Yii::$app->request->post('positions');
         $currencies = Yii::$app->request->post('curriencies');
-     //   var_dump( $this->items);die;
+       // var_dump( $companyName);die;
         if (strpos($platform,'.')){
             $plat = explode('.', $platform);
             $platform = $plat[0];
         }
-    
+     //   var_dump($platform);die;
         $duration = 60*60*24*7;// one week
          // TiresModels
         $dependency = new \yii\caching\DbDependency([
@@ -257,9 +260,12 @@ class TireController extends AdminController
         ]);
         $categories =  \common\models\tires\TireCarType::find()->all();
         $data = \common\models\tires\Tire::getDb()->cache(function ($db) {
-       //     var_dump($this->items);
-            return \common\models\tires\Tire::find()
-                    ->where(['in','id',$this->items])->all();
+            $query = \common\models\tires\Tire::find();
+            if (count($this->items)>0){
+                $query->where(['in','id',$this->items]);
+            }
+            return  $query->all();
+                   
         },$duration,$dependency);
      //   var_dump($data);die;
         switch ($format){
@@ -267,6 +273,7 @@ class TireController extends AdminController
    
                 switch ($platform){
                 case 'rozetka':
+                case 'prom':
                      Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
    $headers = Yii::$app->response->headers;
    $headers->add('Content-Type', 'text/xml; charset=utf-8');
@@ -276,6 +283,9 @@ class TireController extends AdminController
         		'items'=>$data,
         		'categories'=>$categories,
                         'currencies' =>$currencies,
+                        'company'=>$companyName,
+                        'name'=>$siteName,
+                        'url'=>$siteUrl
         		]);     
                     break;
                 }
@@ -307,5 +317,54 @@ class TireController extends AdminController
            
             return $tireModels;
     }/**/
+    
+    private function getTireWidths(){
+         $duration = 60*60*24*7;
+        $dependency = new \yii\caching\DbDependency([
+            'sql'=>'SELECT MAX(updated) FROM '.Tire::tableName(),
+            'reusable'=>true]);
+   $widths =  Tire::getDb()->cache(function ($db) {
+    return ArrayHelper::map(Tire::find()->select(['DISTINCT(width)'])
+            ->orderBy(['width'=>'ASC'])
+            ->where('width IS NOT NULL')
+            ->andWhere('quantity > 0')
+            ->asArray()
+            ->all(),'width','width');
+},$duration,$dependency);
+    return $widths;
+    }/**/
+    
+      private function getTireProfiles(){
+         $duration = 60*60*24*7;
+        $dependency = new \yii\caching\DbDependency([
+            'sql'=>'SELECT MAX(updated) FROM '.Tire::tableName(),
+            'reusable'=>true]);
+     $profiles =  Tire::getDb()->cache(function ($db) {
+    return ArrayHelper::map(Tire::find()->select(['DISTINCT(profile)'])
+            ->orderBy('CAST(profile AS DECIMAL) ASC')
+            ->where('profile IS NOT NULL')
+            ->andWhere('quantity > 0')
+            ->andWhere('profile > 0')
+            ->asArray()
+            ->all(),'profile','profile');
+},$duration,$dependency);
+    return $profiles;
+    }/**/  
+    
+          private function getTireDiameters(){
+         $duration = 60*60*24*7;
+        $dependency = new \yii\caching\DbDependency([
+            'sql'=>'SELECT MAX(updated) FROM '.Tire::tableName(),
+            'reusable'=>true]);
+     $diameters =   Tire::getDb()->cache(function ($db) {
+    return ArrayHelper::map(Tire::find()->select(['DISTINCT(diameter)'])
+            ->orderBy('CAST(diameter AS DECIMAL) ASC')
+            ->where('diameter IS NOT NULL')
+            ->andWhere('quantity > 0')
+            ->asArray()
+            ->all(),'diameter','diameter');
+},$duration,$dependency);
+return $diameters;
+    }/**/  
     
 }/*end of Controller*/

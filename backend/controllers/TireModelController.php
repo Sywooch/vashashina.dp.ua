@@ -40,10 +40,7 @@ class TireModelController extends \backend\components\AdminController
     {
         $searchModel = new TireModelSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        
-        
-        
-        
+
         $data = [];
         $emptyImages= TireModel::find()->where('image IS Null')->count();
         $emptyDescs= TireModel::find()->where('long_desc IS Null')->count();
@@ -52,6 +49,7 @@ class TireModelController extends \backend\components\AdminController
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'tireModels' =>$this->getTireModels(Yii::$app->request->get('TireModelSearch')['brand_id']),
            
             'emptyImages'=>$emptyImages,
             'emptyDescs'=>$emptyDescs,
@@ -214,6 +212,26 @@ class TireModelController extends \backend\components\AdminController
     		$model->save();
     	
     	}
+    }/**/
+    
+     private function getTireModels($brand_id = 0){
+      
+      if (isset(Yii::$app->request->get('TireModelSearch')['brandTitle'])){
+        $brand_id = Yii::$app->request->get('TireModelSearch')['brandTitle'];
+      }
+         $query = \common\models\tires\TireModel::find();
+                $query->select(['id','title']);
+                if ($brand_id>0){
+                    $query->where('brand_id = :id',
+                            [':id'=>$brand_id]);
+                }
+                 $query ->orderBy(['title'=>'ACS']);
+                $query->asArray();
+                $models= $query->all();
+          //  $tireModels[]=Yii::t('app','Models');
+            $tireModels = \yii\helpers\ArrayHelper::map($models, 'id', 'title');
+           
+            return $tireModels;
     }/**/
     
 }/*end of Class*/

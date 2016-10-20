@@ -11,8 +11,14 @@ use yii\helpers\ArrayHelper;
         <div class="search-box">
             <?php    foreach ($articles as $article):?>
                  <div class="some-interest">
-            <div class="img">  <?=Html::img($article->imageUrl,['title'=>$article->title,'alt'=>$article->title]);?>    </div>
-            <div class="head"><?=Html::a($article->title,$article->url);?></div>
+                     <?php if($article->imageUrl):?>
+            <div class="img">  
+                <?=Html::img($article->imageUrl,['title'=>$article->title,'alt'=>$article->title]);?>    
+            </div>
+                     <?php endif;?>
+            <div class="head">
+            <?=Html::a($article->title,$article->url);?>
+            </div>
           </div>
             <?php    endforeach;?>
             </div>

@@ -34,7 +34,7 @@ $model->updateCounters(['views'=>1]);
                               <td><?=$model->width;?></td>
                             </tr>
                             <tr>
-                              <td>Профиль</td>
+                              <td>Высота</td>
                               <td><?=$model->profile;?></td>
                             </tr>
                             <tr>

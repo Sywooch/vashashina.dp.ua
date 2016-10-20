@@ -13,7 +13,7 @@ return [
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
          'request' => [
-            'baseUrl' => ($_SERVER['HTTP_HOST']=='localhost') ?'/vashashina.kiev.ua':'',
+            'baseUrl' => ($_SERVER['HTTP_HOST']=='localhost') ?'/vashashina.dp.ua':'',
         ],
         'user' => [
             'identityClass' => 'common\models\User',

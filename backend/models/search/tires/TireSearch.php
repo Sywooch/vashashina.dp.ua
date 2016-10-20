@@ -8,6 +8,8 @@ use yii\data\ActiveDataProvider;
 use common\models\tires\Tire;
 use common\models\tires\TireModel;
 use common\models\tires\TireManufacturer;
+use common\models\tires\TireCarType;
+use common\models\tires\TireSeason;
 
 /**
  * TireSearch represents the model behind the search form about `app\models\Tire`.
@@ -18,6 +20,8 @@ class TireSearch extends Tire
     public $modelTitle;
     public $tireModel;
     public $params;
+    public $carTypeTitle;
+    public $tireSeasonTitle;
     
     /**
      * @inheritdoc
@@ -26,8 +30,9 @@ class TireSearch extends Tire
     {
         return [
             [['id', 'model_id', 'quantity', 'category_id', 'discount_begin', 'discount_end', 'status', 'created', 'updated', 'created_by', 'update_by'], 'integer'],
-            [['brandTitle','tireModel','params', 'full_title', 'ship', 'usilennaya'], 'safe'],
+            [['brandTitle','carTypeTitle','tireSeasonTitle','tireModel','params', 'full_title', 'ship', 'usilennaya'], 'safe'],
             [['width', 'profile', 'diameter', 'max_load', 'max_speed'],'string'],
+             [['width', 'profile', 'diameter'],'number'],
             [['price', 'discount'], 'number']
         ];
     }
@@ -55,7 +60,9 @@ class TireSearch extends Tire
         if ($model_id > 0) $query->andWhere (['model_id'=>$model_id]);
            $query->joinWith(['tireModel']);
              $query->joinWith(['tireModel'=> function ($q) {
-        $q->joinWith(['brand']);}]);
+        $q->joinWith(['brand','carType','tireSeason']);
+        
+             }]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -69,6 +76,18 @@ class TireSearch extends Tire
         $dataProvider->sort->attributes['tireModel']= [
                 'asc' => [TireModel::tableName().'.title' => SORT_ASC],
                 'desc' => [TireModel::tableName().'.title' => SORT_DESC],
+              //  'label' => 'Full Name',
+              //  'default' => SORT_ASC 
+        ];
+        $dataProvider->sort->attributes['carTypeTitle']= [
+                'asc' => [TireCarType::tableName().'.title' => SORT_ASC],
+                'desc' => [TireCarType::tableName().'.title' => SORT_DESC],
+              //  'label' => 'Full Name',
+              //  'default' => SORT_ASC 
+        ];
+        $dataProvider->sort->attributes['tireSeasonTitle']= [
+                'asc' => [TireSeason::tableName().'.title' => SORT_ASC],
+                'desc' => [TireSeason::tableName().'.title' => SORT_DESC],
               //  'label' => 'Full Name',
               //  'default' => SORT_ASC 
         ];
@@ -104,6 +123,8 @@ class TireSearch extends Tire
 
         $query->andFilterWhere([ TireModel::tableName().'.id' => $this->tireModel])
                 ->andFilterWhere([ TireManufacturer::tableName().'.id' => $this->brandTitle])
+                 ->andFilterWhere([ TireCarType::tableName().'.id' => $this->carTypeTitle])
+                 ->andFilterWhere([ TireSeason::tableName().'.id' => $this->tireSeasonTitle])
                 ->andFilterWhere(['like', 'full_title', $this->full_title])
             ->andFilterWhere(['like', 'ship', $this->ship])
             ->andFilterWhere(['like', 'usilennaya', $this->usilennaya]);

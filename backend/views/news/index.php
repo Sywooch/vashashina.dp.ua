@@ -35,7 +35,9 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'desc:ntext',
             // 'text:ntext',
             'views',
-            // 'created',
+             ['attribute'=>'created','value'=>function($model){
+        return date("d.m.Y H:i",$model->created);
+             }],
             // 'updated',
             // 'created_by',
             // 'updated_by',

@@ -1,6 +1,6 @@
 <?php //header("Content-type: text/xml");
-$file = "TourlandiaPromXml.xml";
- 	header("Pragma: public");
+$file = $company."XmlProm.xml";
+    header("Pragma: public");
     header("Expires: 0");
     header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
     header("Content-Type: application/force-download");
@@ -9,78 +9,61 @@ $file = "TourlandiaPromXml.xml";
     header("Content-Disposition: attachment;filename=$file");
     header("Content-Transfer-Encoding: binary ");?>
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL ?>
+
+<yml_catalog date="<?php echo date('Y-m-d H:i');?>">
 <shop>
-<currency code="USD" rate="26" />
-<catalog>
-	<?php foreach ($categories as $category):?>
-	<category id ="<?php echo $category->id;?>"
-	portal_id="<?php echo $category->promCats[0]->prom_id?>" 
-	portal_url="<?php echo $category->promCats[0]->url?>">
-	<?php echo $category->title;?>
-	</category>
-	<?php endforeach;?>
-</catalog>
-	<items>
-    <?php foreach ($items as $item): ?>
-    <?php if (count($item->combinations)>0):?>
-      <?php foreach ($item->combinations as $comb): ?>
-    <item id="<?php echo $item->id.'-'.$comb->id; ?>">
-  
-    <categoryId><?php echo $item->category_id; ?></categoryId>
-    <vendorCode><?php echo $comb->sku ?></vendorCode>
-    <vendor><?php echo htmlspecialchars(Manufacturers::model()->findByPk($item->manufacturer_id)->title) ;?></vendor>
-    <name><?php echo htmlspecialchars(trim($item->title)).' '.$comb->color->title.' '.$comb->size->title; ?></name>
-    <description>
-   <![CDATA[
-    <?php echo (isset($item->longdesc))? $item->longdesc :'';?>
+<name><?=$name;?></name>
+<company><?=$company;?></company>
+<url><?=$url;?></url>
+<currencies>
+    <?php if($currencies !== null && $currencies > 0):?>
+      <?php foreach ($currencies as $key => $currency) :?>
+    <?php if ($currency):?>
+<currency id="<?php echo $key;?>" rate="<?php echo $currency;?>"/>
+<?php endif;?>
+<?php endforeach;?>
+
+<?php endif;?>
+<currency id="UAH" rate="1"/>
+</currencies>
+<categories>
+    <?php if ($categories !== null && count($categories)> 0) :?>
+    <?php foreach ($categories as $category) :?>
+<category id="<?php echo $category->id;?>"><?php echo mb_convert_case($category->title, MB_CASE_TITLE);?></category>
+<?php endforeach;?>
+<?php endif;?>
+</categories>
+<offers>
+    <?php foreach ($items as $item):?>
+<offer id="<?php echo $item->id;?>" available="<?php echo ($item->quantity >0) ?'true':'false';?>">
+<name><?php echo $item->title;?></name>
+<url><?php echo $host.str_replace('backend/web/',"",$item->tireModel->url);?></url>
+<price><?php echo $item->price;?></price>
+<currencyId>UAH</currencyId>
+<categoryId><?php echo $item->tireModel->car_type;?></categoryId>
+<picture>
+<?php echo $host. str_replace('backend/web/',"",$item->tireModel->imageUrl);?>
+</picture>
+<typePrefix>Автошина</typePrefix>
+<vendor><?php echo $item->tireModel->brand->title;?></vendor>
+<param name="Ширина"><?php echo $item->width;?></param>
+<param name="Профиль"><?php echo $item->profile;?></param>
+<param name="Диаметр"><?php echo $item->diameter;?></param>
+<param name="Сезон"><?php echo $item->tireModel->tireSeason->singular;?></param>
+<param name="Тип авто"><?php echo $item->tireModel->carType->title;?></param>
+<param name="Шип"><?php echo $item->ship;?></param>
+<param name="Индекс Скорости"><?php echo $item->max_speed;?></param>
+<param name="Индекс Нагрузки"><?php echo $item->max_load;?></param>
+<param name="Страна-производитель"/>
+<param name="Год выпуска"/>
+<description>
+     <![CDATA[
+    <?php echo (isset($item->long_desc))? $item->long_desc :'';?>
     ]]>
-    </description>
-    <image><?php $imageUrl =  ProductImage::model()->findByPk(ProductColors::getproductColorImage($comb->color->id, $item->id))->imageUrl;
-   if ($imageUrl)
-    	echo (YII_DEBUG?'http:/':'http://'.$_SERVER['HTTP_HOST']).$imageUrl;
-    else
-    echo (YII_DEBUG?'http:/':'http://'.$_SERVER['HTTP_HOST']).$item->imageUrl;?></image>
-    <priceuah><?php echo $comb->price?></priceuah>
-  
-     <priceusd></priceusd>
-    <available><?php echo ($comb->quantity>0)?'Склад':'Под заказ';?></available>
-   
-    <?php if ($comb->color->title):?>
-    <param name="Цвет"><?php echo $comb->color->title;?></param>
-    <?php endif;?>
-        <?php if ($comb->size->title):?>
-    <param name="Размер"><?php echo $comb->size->title;?></param>
-      <?php endif;?>
-    </item>
-      <?php endforeach; // combinations?>
-    <?php else :?>  
-    
-    <item id="<?php echo $item->id; ?>" selling_type="r">   
-    <categoryId><?php echo $item->category_id ?></categoryId>
-    <vendorCode><?php echo $item->sku ?></vendorCode>
-    <vendor><?php echo htmlspecialchars(Manufacturers::model()->findByPk($item->manufacturer_id)->title) ;?></vendor>
-    <name><?php echo htmlspecialchars(trim($item->title)); ?></name>
-    <description>    
-    <![CDATA[
-    <?php echo (isset($item->longdesc))? $item->longdesc :'';?>
-    ]]>
-    </description>
-        <?php if ($this->manyImages && count($item->images)>0):?>
-        <?php $count = 1; foreach ($item->images as $img):?>
-        <?php if ($count > 10) break; ?>
-          <image><?php echo (YII_DEBUG?'http:/':'http://'.$_SERVER['HTTP_HOST']).$img->getImageUrl();?></image>
-  
-        <?php $count++; endforeach;?>
-        <?php else:?>
-    <image><?php echo (YII_DEBUG?'http:/':'http://'.$_SERVER['HTTP_HOST']).$item->getImageUrl();?></image>
-    <?php endif;?>
-       <priceuah><?php echo $item->price?></priceuah>
-    <priceusd></priceusd>
-    <available><?php echo ($item->quantity>0)?'Склад':'Под заказ';?></available>  
-    </item>
-      <?php endif;?>
-   
-    
-    <?php endforeach; //items?>
-    </items>
+</description>
+<sales_notes>Минимальная партия 2 штуки.</sales_notes>
+</offer>
+    <?php endforeach;?>
+</offers>
 </shop>
+</yml_catalog>

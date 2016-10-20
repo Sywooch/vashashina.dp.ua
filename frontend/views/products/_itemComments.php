@@ -53,10 +53,10 @@ CommentAsset::register($this);
     <?php echo $form->field($model,'rating')
                    ->hiddenInput(['value'=>$model->rating,'class'=>'ratingField'])
             ->label(FALSE);?>
-             
+         <?php if (!YII_DEBUG):?> 
    <?= $form->field($model, 'captcha')
                     ->widget(\himiklab\yii2\recaptcha\ReCaptcha::className() ) ?>
-               
+               <?php endif;?>
                   <button class="send-calc margin-20">ОСТАВИТЬ ОТЗЫВ</button>
                 <?php ActiveForm::end();?> 
               </div>

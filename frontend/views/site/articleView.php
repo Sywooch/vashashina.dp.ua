@@ -27,6 +27,12 @@ $links = [
     <h3 class="news orange padding-20"><?=  mb_convert_case($model->title,MB_CASE_UPPER,'UTF-8');?></h3>
 <div class="row" >
     <div class="col-sm-12">
+         <?php echo \frontend\widgets\yashare\YaShare::widget([
+                'title'=>$model->title,
+                'url'=>$model->url,
+                'image'=>$model->imageUrl,
+                'desc'=>$model->text
+            ]);?>
 <?=$model->text;?>
         </div>
 </div>

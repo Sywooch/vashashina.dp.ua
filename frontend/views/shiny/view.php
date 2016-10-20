@@ -168,7 +168,7 @@ $model->views++;
                 <td><?=$tire->width;?></td>
               </tr>
               <tr>
-                <td>Профиль</td>
+                <td>Высота</td>
                 <td><?=$tire->profile;?></td>
               </tr>
               <tr>

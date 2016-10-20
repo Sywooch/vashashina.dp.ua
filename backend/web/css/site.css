@@ -113,7 +113,17 @@ a.desc:after {
 }
 
 .action-column {
-    min-width: 50px;
+    min-width: 70px;
+}
+.min-width{
+min-width: 90px;
+}
+
+.param_width{
+ min-width: 70px;
+}
+select.param{
+padding:6px 3px;
 }
 
 .green{

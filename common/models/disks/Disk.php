@@ -49,7 +49,7 @@ class Disk extends \yii\db\ActiveRecord
             [['model_id', 'quantity', 'category_id', 'discount_begin', 'discount_end', 'views', 'status', 'created', 'updated', 'created_by', 'update_by'], 'integer'],
             [['price', 'discount'], 'number'],
             [['full_title'], 'string', 'max' => 255],
-            [['width', 'diameter', 'pcd','pcd2', 'et','stupitsa'], 'string', 'max' => 11]
+            [['width', 'diameter', 'pcd','pcd2', 'et','stupitsa'], 'string', 'max' => 50]
         ];
     }
 

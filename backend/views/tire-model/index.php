@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use kartik\form\ActiveForm;
 use yii\bootstrap\Button;
@@ -83,20 +84,55 @@ $this->registerJs("
 
             'id',
             
-            [ 'attribute'=>'brand',
+            [ 'attribute'=>'brand_id',
+                'label'=>Yii::t('app','Brand'),
               'value'=>function($model){return mb_convert_case($model->brand->title,MB_CASE_TITLE,'UTF-8');},
-           //'filter' => true,
+           'filter'=>ArrayHelper::map(\common\models\tires\TireManufacturer::find()
+                     ->select(['id','UPPER(title) AS title'])->asArray()
+                     ->orderBy(['title'=>'ASC'])->all(), 'id', 'title'),
+                'filterInputOptions'=>[//'prompt'=>Yii::t('app', 'Brand'),
+                        'class'=>'form-control'],
             ],
-                      ['attribute'=> 'title','value'=>'title'],
+                      ['attribute'=> 'title','value'=>'title',
+                           'filter'=>$tireModels,],
             ['label'=>Yii::t('tires','Count Tires'),  'value'=>function($model){return $model->countTires;}],
            [ 'attribute'=>'car_type',
-              'value'=>function($model){return $model->carType->title;},
-           //'filter' => true,
+              'value'=>function($model){
+                if($model->carType !== NULL){
+                return $model->carType->title;
+                }
+                },
+          'filter'=>ArrayHelper::map(\common\models\tires\TireCarType::find()
+                     ->select(['id','title'])->asArray()
+                     ->orderBy(['title'=>'ASC'])->all(), 'id', 'title'),
+                'filterInputOptions'=>[//'prompt'=>Yii::t('app', 'Car Type'),
+                        'class'=>'form-control']
             ],
            [ 'attribute'=>'season',
               'value'=>function($model){return $model->tireSeason->title;},
-           //'filter' => true,
+         'filter'=>ArrayHelper::map(\common\models\tires\TireSeason::find()
+                     ->select(['id','title'])->asArray()
+                     ->orderBy(['title'=>'ASC'])->all(), 'id', 'title'),
+                'filterInputOptions'=>[//'prompt'=>Yii::t('app', 'Season'),
+                        'class'=>'form-control']
             ],
+                 [ 'attribute'=>'desc','value'=> function($model){
+                  return ($model->long_desc)?Yii::t('app','Yes'):Yii::t('app','No');
+                 },
+                   'filter' => ['1'=>Yii::t('app','Yes'),'0'=>Yii::t('app','No')  ],
+                  'headerOptions'=>['class'=>'min-width']
+                 ],
+        ['attribute'=>'image', 'value'=>  function($model){
+        if ($model->image !== null){
+         //   $image = $model->image;
+        
+    return $this->render('/product/fancybox',['thumbnail'=>$model->thumbnailUrl,
+       'image'=>$model->imageUrl]); 
+        }
+          },
+                  'filter'=>FALSE,
+                  'format'=>'raw'
+                  ],
         //    'meta_k:ntext',
             // 'meta_d:ntext',
             // 'short_desc:ntext',
@@ -119,5 +155,20 @@ $this->registerJs("
     ]); ?>
 
 </div>
+<?php $this->registerJs("$('body').on('change','select[name=\"TireModelSearch[brandTitle]\"]',function(e){
+    var brand_id = $(this).find('option:selected').val();
+  //  console.log(brand_id);
+       $.ajax({
+      url: baseUrl+'/tire-manufacturer/get-brand-models',
+      data: {id:brand_id},
+      dataType: 'html',
+      success:function(data){
+       if (data.length > 0){
+    $('select[name=\"TireModelSearch[tireModel]\"]').replaceWith(data);       
+       }
+              }  
+   });
+});"
+        . "");
 
 

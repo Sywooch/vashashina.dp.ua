@@ -20,7 +20,8 @@ class ShortNews extends Widget
     public function run()
     {
         $data = [];
-        $data['news'] = News::find()->select('id,title,alias,created')->orderBy(['created'=>'desc'])->limit($this->limit)->all();
+        $data['news'] = News::find()->select('id,title,alias,created')
+                ->orderBy('created DESC')->limit($this->limit)->all();
         return $this->render('index',$data);
     }
 }/* end of Widget*/

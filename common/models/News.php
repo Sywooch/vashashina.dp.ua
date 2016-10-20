@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 /**
  * This is the model class for table "{{%news}}".
  *
@@ -50,19 +51,11 @@ class News extends \yii\db\ActiveRecord
     			'createdAtAttribute' => 'created',
     			'updatedAtAttribute' => 'updated',
     			],
-    			[
-            		'class' => 'Zelenin\yii\behaviors\Slug',
-            		'slugAttribute' => 'alias',
-            		'attribute' => 'title',
-            // optional params
-            //		'ensureUnique' => true,
-           	//	    'translit' => true,
-            	//	'replacement' => '-',
-            //		'lowercase' => true,
-            	//	'immutable' => false,
-            		// If intl extension is enabled, see http://userguide.icu-project.org/transforms/general. 
-           			// 'transliterateOptions' => 'Russian-Latin/BGN;'
-       			 ],
+    			 [
+            'class' => BlameableBehavior::className(),
+            'createdByAttribute' => 'created_by',
+            'updatedByAttribute' => 'updated_by',
+        ],
        			
     	];
     	
@@ -92,6 +85,51 @@ class News extends \yii\db\ActiveRecord
     
     public function getUrl(){
     	return \yii\helpers\Url::to(['/news/'.$this->alias]);
+    }/**/
+    
+     public function getShort(){
+        $haystack = $this->text;
+        $needle = '<div style="page-break-after: always"><span style="display:none">&nbsp;</span></div>';
+        $string = substr($haystack, 0,strpos($haystack,$needle) );
+      return $string;
+        
+    }/**/
+    
+    public function getImageUrl(){
+    
+        if ($this->text){
+         $doc = new \DOMDocument();
+                        $doc->loadHTML($this->text);
+                        $xpath = new \DOMXPath($doc);
+                        $src = $xpath->evaluate("string(//img/@src)");
+        if (!$src){
+            $src = NULL;
+        }
+        return $src;
+        }
+        
+    }/**/
+    
+      public function beforeValidate(){
+    	
+        
+         if (!$this->alias && $this->title){
+            $this->attachBehavior('slug', [
+            		'class' => 'Zelenin\yii\behaviors\Slug',
+            		'slugAttribute' => 'alias',
+            		'attribute' => 'title',
+            // optional params
+            		'ensureUnique' => true,
+           	//	    'translit' => true,
+            		'replacement' => '-',
+            		'lowercase' => true,
+            		'immutable' => false,
+            		// If intl extension is enabled, see http://userguide.icu-project.org/transforms/general. 
+           			// 'transliterateOptions' => 'Russian-Latin/BGN;'
+       			 ]);
+        }
+    		
+    	return parent::beforeValidate();
     }/**/
     
 }/**/

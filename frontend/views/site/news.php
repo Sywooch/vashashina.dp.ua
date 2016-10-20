@@ -44,9 +44,11 @@ $links[]= [ 'label' => mb_convert_case(Yii::t('app','page'), MB_CASE_TITLE, 'UTF
        <?php    foreach ($models as $model):?>
         <div class="col-sm-6">
         <div class="some-news box finded bordered padding-10">
+            <!--
             <?php if($model->created):?>
             <div class="date"><?=date('d.m.Y',$model->created);?></div>
             <?php endif;?>
+            -->
             <div class="head"><?=Html::a($model->title,$model->url);?></div>
              <div class="rightArrow">
                 <?=Html::a('',$model->url);?></div>

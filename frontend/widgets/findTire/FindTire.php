@@ -73,7 +73,7 @@ class FindTire extends Widget
 
          $data['tiresProfile'] = Tire::getDb()->cache(function ($db) {
     return ArrayHelper::map(Tire::find()->select(['DISTINCT(profile)'])
-            ->orderBy(['profile'=>'ASC'])
+            ->orderBy('CAST(profile AS DECIMAL) ASC')
             ->where('profile IS NOT NULL')
             ->andWhere('quantity > 0')
             ->andWhere('profile > 0')

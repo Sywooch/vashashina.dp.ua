@@ -139,6 +139,14 @@ class Tire extends \yii\db\ActiveRecord
         return  $this->hasOne(TireModel::className(),  ['id'  =>  'model_id']);
     }
     
+    public function getCarType(){
+        return $this->tireModel->carType;
+    }
+    
+        public function getTireSeason(){
+        return $this->tireModel->tireSeason;
+    }
+    
     public function getBrandTitle(){
        return mb_convert_case($this->tireModel->brand->title,MB_CASE_TITLE);
     }/**/

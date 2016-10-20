@@ -227,9 +227,10 @@ class SiteController extends Controller
     $countQuery = clone $query;
      $count = $countQuery->count();
     $pages = new \yii\data\Pagination(['totalCount' => $count,
-    'pageSize'=>(isset(Yii::$app->session['perPage']))?Yii::$app->session['perPage']+1:10]);
+    'pageSize'=>(isset(Yii::$app->session['perPage']))?Yii::$app->session['perPage']:10]);
 
     $models = $query->offset($pages->offset)
+        ->orderBy('created DESC')
         ->limit($pages->limit)
         ->all();
 
@@ -264,9 +265,10 @@ class SiteController extends Controller
     $countQuery = clone $query;
     $count = $countQuery->count();
     $pages = new \yii\data\Pagination(['totalCount' => $count,
-    'pageSize'=>(isset(Yii::$app->session['perPage']))?Yii::$app->session['perPage']+1:10]);
+    'pageSize'=>(isset(Yii::$app->session['perPage']))?Yii::$app->session['perPage']:10]);
 
     $models = $query->offset($pages->offset)
+        ->orderBy('created DESC')
         ->limit($pages->limit)
         ->all();
 

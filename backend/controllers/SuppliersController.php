@@ -860,18 +860,21 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
                                      }
                                   }
                          } else{
-                             var_dump($model->errors);
+                             $errors[$model->id] = $model->errors;
                          }
                         } else {
                         // validation failed: $errors is an array containing error messages
                         $errors[$model->id] = $model->errors;
-                        var_dump($errors);
+                      
                         }
                        //     var_dump($model);
                         }// end if model ID
                         }// end foreach supItems
                   if ($count > 0 && (count($errors)== 0)){
                           Yii::$app->session->setFlash ( 'success', 'Обновлено '.$count.' позиций наших дисков! ' );
+                        } else {
+                    Yii::$app->session->setFlash ( 'warning', 'Обновлено '.$count.' позиций наших дисков! '
+                               . 'Ошибок: '.count($errors) );              
                         }
                       
     }/**/

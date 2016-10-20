@@ -12,9 +12,11 @@ use yii\bootstrap\Button;
             <div class="search-box">
             <?php    foreach ($news as $new):?>
         <div class="some-news">
+            <!--
           <?php if ($new->created):?>
             <div class="date"><?=date('d.m.Y',$new->created);?></div>
             <?php endif;?>
+            -->
             <div class="head"><?=Html::a($new->title,$new->url);?></div>
              <div class="rightArrow">
                 <?=Html::a('',$new->url);?></div>

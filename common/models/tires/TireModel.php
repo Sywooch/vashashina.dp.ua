@@ -133,9 +133,11 @@ public function getFullTitle(){
     return mb_convert_case($this->brand->title, MB_CASE_TITLE, 'UTF-8').' '.mb_convert_case($this->title, MB_CASE_TITLE, 'UTF-8'); 
 } /**/
 
-	public function getCountTires(){		
+public function getCountTires(){		
 		return Tire::find()->where(['model_id'=>$this->id])->count();		
 	}/**/
+        
+        
 public function beforeSave($insert){
 	$this->title = mb_convert_case($this->title,MB_CASE_TITLE,'UTF-8');
 	return parent::beforeSave($insert);
@@ -152,11 +154,11 @@ public function getUrl(){
 
 public function getImageUrl(){
     if ($this->image){
-        $url = '/images/tires/'.$this->brand->alias.'/'.$this->alias.'/'.$this->image;
+        $url = YII_BASE_URL .'/images/tires/'.$this->brand->alias.'/'.$this->alias.'/'.$this->image;
     } else{
-        $url = '/images/tire_icon.jpg'; 
+        $url = YII_BASE_URL .'/images/tire_icon.jpg'; 
     }
-	return Url::to([$url]);
+	return Url::to($url);
 }/**/
 
 public function getSeasonImageUrl(){
@@ -179,11 +181,11 @@ public function getSeasonImageUrl(){
 
 public function getThumbnailUrl(){
 	 if ($this->thumbnail){
-        $url = '/images/tires/'.$this->brand->alias.'/'.$this->alias.'/'.$this->thumbnail;
+        $url = YII_BASE_URL .'/images/tires/'.$this->brand->alias.'/'.$this->alias.'/'.$this->thumbnail;
     } else{
-        $url = '/images/tire_icon_thumb.jpg'; 
+        $url = YII_BASE_URL .'/images/tire_icon_thumb.jpg'; 
     }
-	return Url::to([$url]);
+	return Url::to($url);
 }/**/
 
 public function getComments(){

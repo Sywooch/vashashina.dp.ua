@@ -15,10 +15,10 @@ use frontend\widgets\price\Price;
             
               <table class="table">
                 <tbody>
-                
+                <?php if (count($this->context->cart) > 0):?>
                     <?php foreach ($this->context->cart as $kid => $cat):?>
                     <?php foreach ($cat as $id => $item):?>
-                
+                 <?php if (isset($item['name'])):?>
                   <tr class="cartRow">
                        
                     <td class="textCartTd">
@@ -39,8 +39,10 @@ use frontend\widgets\price\Price;
                     </td>
                    
                   </tr>
+                   <?php endif;?>
                    <?php endforeach;?>
                   <?php endforeach;?>
+                  <?php endif;?>
                 </tbody>
               </table>
               <div class="cartTotal">

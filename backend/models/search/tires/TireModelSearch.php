@@ -13,7 +13,10 @@ use common\models\tires\TireManufacturer;
  */
 class TireModelSearch extends TireModel
 {
-	public $brand;
+        public $brand;
+	public $brand_id;
+        public $desc;
+        public $img;
     /**
      * @inheritdoc
      */
@@ -21,7 +24,7 @@ class TireModelSearch extends TireModel
     {
         return [
             [['id', 'brand_id', 'car_type', 'season', 'created', 'updated', 'created_by', 'updated_by'], 'integer'],
-            [['title', 'alias', 'pageTitle','brand', 'meta_k', 'meta_d', 'short_desc', 'long_desc', 'image', 'thumbnail', 'status', 'featured'], 'safe'],
+            [['title', 'alias','img','desc', 'pageTitle','brand', 'meta_k', 'meta_d', 'short_desc', 'long_desc', 'image', 'thumbnail', 'status', 'featured'], 'safe'],
         ];
     }
 
@@ -67,10 +70,7 @@ class TireModelSearch extends TireModel
             'brand_id' => $this->brand_id,
             'car_type' => $this->car_type,
             'season' => $this->season,
-            'created' => $this->created,
-            'updated' => $this->updated,
-            'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by,
+          
         ]);
 
         $query->andFilterWhere(['like', parent::tableName().'.title', $this->title])
@@ -85,6 +85,13 @@ class TireModelSearch extends TireModel
             ->andFilterWhere(['like', 'status', $this->status])
             ->andFilterWhere(['like', 'featured', $this->featured]);
      $query->andFilterWhere(['like', TireManufacturer::tableName().'.title', $this->brand]);
+    
+     if ($this->desc && $this->desc == 1){
+         $query->andWhere('long_desc IS NOT NULL');
+     } 
+      if ($this->desc === '0'){
+         $query->andWhere('long_desc IS NULL');
+     }
 
         return $dataProvider;
     }

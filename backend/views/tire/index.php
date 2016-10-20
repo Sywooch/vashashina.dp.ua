@@ -101,10 +101,33 @@ $this->registerJs("
         <?php echo Html::textInput('currencies[EUR]','',
                 ['placeholder'=>'EURO','class'=>'form-control']);?>
             </div>
-                   <div class="form-group">
-         <?php echo Html::textInput('currencies[USD]','',
-                 ['placeholder'=>'USD','class'=>'form-control']);?>
+                <div class="form-group">
+        <?php echo Html::textInput('currencies[USD]','',
+                ['placeholder'=>'USD','class'=>'form-control']);?>
+            </div>
+         <div class="form-group">
+              <?php echo Html::label(Yii::t('app','Company Name'));?>
+         <?php echo Html::textInput('companyName','VashaShina.dp.ua',
+                 ['placeholder'=>Yii::t('app','Company Name'),
+                     'class'=>'form-control',
+                    ]);?>
                    </div>
+                   <div class="form-group">
+                       <?php echo Html::label(Yii::t('app','Site Name'));?>
+         <?php echo Html::textInput('siteName','VashaShina.dp.ua',
+                 ['placeholder'=>Yii::t('app','Site Name'),
+                     'class'=>'form-control',
+                    ]);?>
+                   </div>
+             <div class="form-group">
+                    <?php echo Html::label(Yii::t('app','Site Url'));?>
+         <?php echo Html::textInput('siteUrl','vashashina.dp.ua',
+                 ['placeholder'=>Yii::t('app','Site Url'),
+                     'class'=>'form-control',
+                    ]);?>
+                   </div>
+                          
+
                           <div class="form-group">
        <?php echo Html::dropDownList('format', '',['xml'=>'XML-формат'],
                ['prompt'=>Yii::t('app','Choose file format'),
@@ -112,7 +135,8 @@ $this->registerJs("
                           </div>
                 <div class="form-group"> 
        <?php echo Html::dropDownList('platform', '',['rozetka.ua'=>'Rozetka.ua',
-          'hotline.ua'=>'Hotline.ua','aukro.ua'=>'Aukro.ua', ],
+          'hotline.ua'=>'Hotline.ua','aukro.ua'=>'Aukro.ua',
+           'prom.ua'=>'Prom.ua'],
                ['prompt'=>Yii::t('app','Choose a platform'),
                    'class'=>'form-control']);?>
                      </div>
@@ -180,14 +204,14 @@ $this->registerJs("
              'filter'=>ArrayHelper::map(\common\models\tires\TireManufacturer::find()
                      ->select(['id','UPPER(title) AS title'])->asArray()
                      ->orderBy(['title'=>'ASC'])->all(), 'id', 'title'),
-                'filterInputOptions'=>['prompt'=>Yii::t('app', 'Brands'),
+                'filterInputOptions'=>[//'prompt'=>Yii::t('app', 'Brand'),
                         'class'=>'form-control']],
              ['attribute'=>'tireModel',
                    'label'=>Yii::t('app','Model'),
                  'value'=>function($model){
             return $model->modelTitle;},
                     'filter'=>$tireModels,
-                    'filterInputOptions'=>['prompt'=>Yii::t('app', 'Models'),
+                    'filterInputOptions'=>[//'prompt'=>Yii::t('app', 'Model'),
                         'class'=>'form-control'],
               ],
           //   ['attribute'=>'params','value'=>function($model){return $model->getParams();}],
@@ -195,22 +219,55 @@ $this->registerJs("
            //  'value'=>function($model){return $model->title;}    ],
          //      ['attribute'=> 'model_id',
            //   'value'=>function($model){return $model->tireModel->model;}  ],
-            ['attribute'=>'width','label'=>'W'],
-             ['attribute'=>'profile','label'=>'P'],
-            ['attribute'=>'diameter','label'=>'R'],
+            ['attribute'=>'carTypeTitle',
+                 'label'=>Yii::t('tires','Car Type'),
+                'value'=> function ($model){
+                    return $model->carType->title;
+                },
+                'filter'=>ArrayHelper::map(\common\models\tires\TireCarType::find()
+                     ->select(['id','title'])->asArray()
+                     ->orderBy(['title'=>'ASC'])->all(), 'id', 'title'),
+                'filterInputOptions'=>[//'prompt'=>Yii::t('app', 'Car Type'),
+                        'class'=>'form-control']
+                ],
+              ['attribute'=>'tireSeasonTitle',
+                   'label'=>Yii::t('tires','Season'),
+                   'value'=> function ($model){
+                    return $model->tireSeason->title;
+                },
+                  'filter'=>ArrayHelper::map(\common\models\tires\TireSeason::find()
+                     ->select(['id','title'])->asArray()
+                     ->orderBy(['title'=>'ASC'])->all(), 'id', 'title'),
+                'filterInputOptions'=>[//'prompt'=>Yii::t('app', 'Season'),
+                        'class'=>'form-control']],
+            ['attribute'=>'width','label'=>'W',
+                 'filter'=>$tireWidths,
+                'filterInputOptions'=>[//'prompt'=>Yii::t('app', 'Season'),
+                        'class'=>'form-control param'],
+                'headerOptions'=>['class'=>'param_width']],
+             ['attribute'=>'profile','label'=>'P',
+                  'filter'=>$tireProfiles,
+                  'filterInputOptions'=>[//'prompt'=>Yii::t('app', 'Season'),
+                        'class'=>'form-control param'],
+                 'headerOptions'=>['class'=>'param_width']],
+            ['attribute'=>'diameter','label'=>'R',
+                 'filter'=>$tireDiameters,
+                 'filterInputOptions'=>[//'prompt'=>Yii::t('app', 'Season'),
+                        'class'=>'form-control param'],
+                'headerOptions'=>['class'=>'param_width']],
                       ['attribute'=>'max_load','label'=>'ML'],
                       ['attribute'=>'max_speed','label'=>'MS'],
             
               ['attribute'=>'ship','label'=>'Шип.'],
              ['attribute'=>'usilennaya','label'=>'Усил.'],
           
-             'quantity',
+             ['attribute'=>'quantity','label'=>Yii::t('app','Qty')],
              'price',
             // 'category_id',
             // 'discount',
             // 'discount_begin',
             // 'discount_end',
-            	'views',
+            	['attribute'=>'views','label'=>Yii::t('app','Vws')],
             // 'status',
             // 'created',
             // 'updated',

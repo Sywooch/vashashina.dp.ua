@@ -62,7 +62,7 @@ class TireTraderDisks extends \yii\db\ActiveRecord
             [['optovaya_iskhodnaya_cena', 'roznichnaya_iskhodnaya_cena', 'vykhodnaya_optovaya_cena', 'vykhodnaya_roznichnaya_cena', 'skidka'], 'number'],
             [['brend', 'model'], 'string', 'max' => 150],
             [['width', 'diameter', 'color', 'gorod'], 'string', 'max' => 50],
-            [['pcd1', 'pcd2', 'et', 'stupitsa', 'tip'], 'string', 'max' => 10],
+            [['pcd1', 'pcd2', 'et', 'stupitsa', 'tip'], 'string', 'max' => 50],
             [['postavshhik'], 'string', 'max' => 100],
             [['fajjl_izobrazhenie'], 'string', 'max' => 255]
         ];
