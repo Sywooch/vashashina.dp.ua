@@ -3,7 +3,8 @@
 namespace backend\models\suppliers;
 
 use Yii;
-
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 /**
  * This is the model class for table "{{%tire_trader}}".
  *
@@ -47,7 +48,21 @@ class TireTraderTires extends \yii\db\ActiveRecord
     {
         return '{{%tire_trader_tires}}';
     }
-
+    public function behaviors(){
+    return [
+        [
+            'class' => TimestampBehavior::className(),
+            'createdAtAttribute' => 'created_at',
+            'updatedAtAttribute' => 'updated_at',
+        //    'value' => new Expression('NOW()'),
+        ],
+        [
+            'class' => BlameableBehavior::className(),
+            'createdByAttribute' => 'created_by',
+            'updatedByAttribute' => 'LastUpdatedBy',
+        ],
+    ];
+}/**/
     /**
      * @inheritdoc
      */

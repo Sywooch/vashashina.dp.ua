@@ -10,8 +10,7 @@ $file = $company."XmlProm.xml";
     header("Content-Transfer-Encoding: binary ");?>
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL ?>
 
-<yml_catalog date="<?php echo date('Y-m-d H:i');?>">
-<shop>
+<shop date="<?php echo date('Y-m-d H:i');?>">
 <name><?=$name;?></name>
 <company><?=$company;?></company>
 <url><?=$url;?></url>
@@ -26,25 +25,27 @@ $file = $company."XmlProm.xml";
 <?php endif;?>
 <currency id="UAH" rate="1"/>
 </currencies>
-<categories>
+<catalog>
     <?php if ($categories !== null && count($categories)> 0) :?>
     <?php foreach ($categories as $category) :?>
-<category id="<?php echo $category->id;?>"><?php echo mb_convert_case($category->title, MB_CASE_TITLE);?></category>
+<category id="<?php echo (($url !=='vashashina.dp.ua')?10000:0) + $category->id;?>" portal_id="801222" 
+	portal_url="http://prom.ua/Avtomobilnye-shiny">
+    <?php echo mb_convert_case($category->title, MB_CASE_TITLE);?>
+</category>
 <?php endforeach;?>
 <?php endif;?>
-</categories>
-<offers>
+</catalog>
+<items>
     <?php foreach ($items as $item):?>
-<offer id="<?php echo $item->id;?>" available="<?php echo ($item->quantity >0) ?'true':'false';?>">
-<name><?php echo $item->title;?></name>
-<url><?php echo $host.str_replace('backend/web/',"",$item->tireModel->url);?></url>
-<price><?php echo $item->price;?></price>
+<item id="<?php echo (($url !=='vashashina.dp.ua')?"vs_":''). $item->id;?>">
+<name><?php echo htmlspecialchars(trim($item->title));?></name>
+<url><?php echo str_replace('/localhost',"",$host) . str_replace('backend/web/',"",$item->tireModel->url);?></url>
+<priceuah><?php echo $item->price;?></priceuah>
 <currencyId>UAH</currencyId>
-<categoryId><?php echo $item->tireModel->car_type;?></categoryId>
-<picture>
-<?php echo $host. str_replace('backend/web/',"",$item->tireModel->imageUrl);?>
-</picture>
-<typePrefix>Автошина</typePrefix>
+<categoryId><?php echo  (($url !=='vashashina.dp.ua')?10000:0) + $item->tireModel->car_type;?></categoryId>
+<image>
+<?php echo str_replace('/localhost',"",$host) . str_replace('backend/web/',"",$item->tireModel->imageUrl);?>
+</image>
 <vendor><?php echo $item->tireModel->brand->title;?></vendor>
 <param name="Ширина"><?php echo $item->width;?></param>
 <param name="Профиль"><?php echo $item->profile;?></param>
@@ -58,12 +59,12 @@ $file = $company."XmlProm.xml";
 <param name="Год выпуска"/>
 <description>
      <![CDATA[
-    <?php echo (isset($item->long_desc))? $item->long_desc :'';?>
+    <?php echo (isset($item->tireModel->long_desc))? $item->tireModel->long_desc :'';?>
     ]]>
 </description>
-<sales_notes>Минимальная партия 2 штуки.</sales_notes>
-</offer>
+<available><?php echo ($item->quantity>0)?'Склад':'Под заказ';?></available> 
+
+</item>
     <?php endforeach;?>
-</offers>
+</items>
 </shop>
-</yml_catalog>

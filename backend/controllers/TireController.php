@@ -259,11 +259,12 @@ class TireController extends AdminController
         		'sql' => 'SELECT MAX(updated) FROM'.\common\models\tires\Tire::tableName(),
         ]);
         $categories =  \common\models\tires\TireCarType::find()->all();
-        $data = \common\models\tires\Tire::getDb()->cache(function ($db) {
-            $query = \common\models\tires\Tire::find();
+        $data = Tire::getDb()->cache(function ($db) {
+            $query = Tire::find();
             if (count($this->items)>0){
                 $query->where(['in','id',$this->items]);
             }
+            $query->where('price > 0');
             return  $query->all();
                    
         },$duration,$dependency);

@@ -129,7 +129,7 @@ class SuppliersController extends \backend\components\AdminController {
 			 */
 			if ($model->file && $model->validate ()) {
 				foreach ( $model->file as $file ) {
-					$filePath = Yii::getAlias ( '@root' ) . '/uploads/';
+					$filePath = Yii::getAlias ( '@backend' ) . '/web/tmp/';
 					$file->saveAs ( $filePath . $file->baseName . '.' . $file->extension );
 					$obj = new \PHPExcel ();
 					$reader = \PHPExcel_IOFactory::load ( $filePath . $file->baseName . '.' . $file->extension );

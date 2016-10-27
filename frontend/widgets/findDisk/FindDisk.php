@@ -58,7 +58,7 @@ class FindDisk extends Widget
         
         $data['disksWidth'] = Disk::getDb()->cache(function ($db) {
     return ArrayHelper::map(Disk::find()->select(['DISTINCT(width)'])
-            ->orderBy(['width'=>'ASC'])
+            ->orderBy('CAST(width AS DECIMAL) ASC')
             ->where('width IS NOT NULL')
             ->andWhere('quantity > 0')
             ->asArray()
