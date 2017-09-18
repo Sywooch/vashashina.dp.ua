@@ -24,6 +24,9 @@ return [
             'showScriptName' => false,
          //    'baseUrl'=>'/vashashina.dp.ua',
         ],
+        'user'=>[
+       //     'on afterLogin' => ['common\events\UserEvents', 'afterLogin'],
+        ],
         'assetManager' => [
              'appendTimestamp' => true,
              'converter' => [

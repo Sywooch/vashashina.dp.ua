@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\Order;
+use common\models\ProductsPerOrder;
 use backend\models\search\OrderSearch;
 use backend\components\AdminController;
 use yii\web\NotFoundHttpException;
@@ -35,10 +36,12 @@ class OrderController extends AdminController
     {
         $searchModel = new OrderSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $orderSum = $this->getSumOfOrders($dataProvider);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'orderSum' => $orderSum
         ]);
     }
 
@@ -138,8 +141,50 @@ class OrderController extends AdminController
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
-    }
+    }/**/
+    
+    public function actionUpdateItems($product_id,$order_id){
 
+        if (Yii::$app->request->isAjax){
+
+            $model = ProductsPerOrder::find()
+                ->where(['product_id'=>$product_id,'order_id'=>$order_id])
+                ->one();
+            // echo $model->id;die;
+            if ($model->load(Yii::$app->request->post())  ) {
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', 'Данные успешно обновлены');
+                } else {
+                    Yii::$app->session->setFlash('danger', 'Приобновлении данных произошла ошибка');
+                }
+            }
+
+            return $this->renderAjax('_formAjax', [
+                'model' => $model,
+            ]);
+        } else{
+            \yii\helpers\VarDumper::dump($_REQUEST);
+        }
+
+    }/**/
+
+    public function actionDeleteItems($product_id,$order_id){
+        $model = ProductsPerOrder::find()
+            ->where(['product_id'=>$product_id,'order_id'=>$order_id])
+            ->one();
+        if ($model !== null) {
+            $model->delete();
+            Yii::$app->session->setFlash('success', 'Данные успешно удалены');
+        }
+        return $this->redirect(['view','id'=>$order_id]);
+    }/**/
+
+    public function actionGetTotalSum($order_id){
+        if (($model = Order::findOne($order_id)) !== null) {
+            return $model->suma;
+        }
+    }/**/
+    
     /**
      * Finds the Order model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -154,5 +199,15 @@ class OrderController extends AdminController
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-}
+    }/**/
+
+    private function getSumOfOrders($dataProvider){
+        $sum = 0;
+        foreach ($dataProvider->getModels() as $model){
+            $sum += $model->suma;
+        }
+
+        return $sum;
+    }/**/
+
+}/* end of Controller */

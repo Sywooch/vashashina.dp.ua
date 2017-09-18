@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'customer_id')->textInput() ?>
+
 
     <?= $form->field($model, 'suma')->textInput() ?>
 
@@ -24,15 +24,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'sposob_dostavki')->textInput() ?>
 
-    <?= $form->field($model, 'created')->textInput() ?>
-
-    <?= $form->field($model, 'updated')->textInput() ?>
 
     <?= $form->field($model, 'manager_id')->textInput() ?>
 
     <?= $form->field($model, 'memo')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'email')->textInput() ?>
+    
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\grid\GridView;
+use backend\widgets\alerts\Alerts;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Order */
@@ -16,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="order-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
+<?=Alerts::widget();?>
     <p>
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a(Yii::t('app', 'Cancel'), ['cancel', 'id' => $model->id], [
@@ -31,11 +32,15 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            ['attribute'=>'id',
+                'contentOptions'=>['id'=>'order_id']
+            ],
              ['attribute'=>'customer_id',
              'value'=>$model->user->name.' <br/> '.$model->user->email.' <br/> '.$model->user->phone,
              'format'=>'html' ],
-            'suma',
+            ['attribute'=>'suma',
+                'contentOptions'=>['id'=>'orderTotalSum']
+            ],
               ['attribute'=> 'payment_status','value'=>Yii::t('app',$model->payment_status)],
               ['attribute'=> 'delivery_status','value'=>Yii::t('app',$model->delivery_status)],
             
@@ -50,33 +55,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
     
-        <?= GridView::widget([
-        'dataProvider' => $productsProvider,
-   //     'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-           ['attribute'=> 'category_id','value'=>function($product){
-           	return $product->category->title;
-           }],
-            ['attribute'=> 'product_id', 'value'=>function($product){
-            	return $product->product->title;
-            } ],
-            'quantity',
-            'price',
-            'subtotal',
-          //  'payment_status',
-         //   'delivery_status',
-            // 'sposob_oplati',
-            // 'sposob_dostavki',
-            // 'created',
-            // 'updated',
-            // 'manager_id',
-            // 'memo',
-            // 'email:email',
-
-        //    ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+ <?php echo $this->render('_productsView',['productsProvider'=>$productsProvider]);?>
 
 </div>

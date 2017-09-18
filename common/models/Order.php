@@ -115,6 +115,16 @@ class Order extends \yii\db\ActiveRecord
     	 
     	return parent::afterDelete();
     }/**/
+
+    public function updateSum(){
+        $db = Yii::$app->db;
+        $command = $db->createCommand('SELECT SUM(subtotal) FROM '.ProductsPerOrder::tableName().'
+          WHERE order_id='.$this->id);
+        $this->suma = $command->queryScalar();
+        
+        $this->save();
+
+    }/**/
     
     
 }/**/

@@ -54,7 +54,7 @@ CommentAsset::register($this);
                    ->hiddenInput(['value'=>$model->rating,'class'=>'ratingField'])
             ->label(FALSE);?>
                 <?php if(Yii::$app->user->isGuest):?>
-   <?= $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::classname() ) ?>
+   <?php echo $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::classname() ) ?>
                   <?php endif;?>
                   <button class="send-calc margin-20">ОСТАВИТЬ ОТЗЫВ</button>
                 <?php ActiveForm::end();?> 

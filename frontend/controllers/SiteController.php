@@ -397,6 +397,17 @@ class SiteController extends Controller
         }
     }/**/
     
+    public function actionAddPhonesShow(){
+        $request = Yii::$app->request;
+        if($request->isAjax){
+          $model = new \common\models\ShowPhone();
+         return $model->save();
+          
+        }
+          Yii::$app->end();
+    }/**/
+
+
     public function actionAddComment(){
         $model = new \common\models\Comment;
         $model->load(Yii::$app->request->post());

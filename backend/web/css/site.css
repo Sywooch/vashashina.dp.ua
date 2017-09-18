@@ -133,3 +133,13 @@ padding:6px 3px;
 .red{
 	color: maroon;
 }
+
+.d-line{
+
+width:100%;
+display:block;
+border:1px dashed grey;
+}
+
+
+

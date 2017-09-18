@@ -34,6 +34,7 @@ AppAsset::register($this);
     <script type="text/javascript">
 //<![CDATA[
 baseUrl ='<?=Yii::$app->request->baseUrl;?>';
+suffix ='<?=Yii::$app->urlManager->suffix;?>';
 //]]>
 </script>
 
@@ -77,8 +78,10 @@ baseUrl ='<?=Yii::$app->request->baseUrl;?>';
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center-xs">
         <h3 class="footer">Шиномонтаж</h3>
         <ul>
-          <li>ТЕЛ.: <?=Settings::findOne(['name'=>'Телефон1'])->value;?> <br/>
-              ТЕЛ.: <?=Settings::findOne(['name'=>'Телефон2'])->value;?></li>
+          <li><!--ТЕЛ.: <?=Settings::findOne(['name'=>'Телефон1'])->value;?> <br/>
+              ТЕЛ.: <?=Settings::findOne(['name'=>'Телефон2'])->value;?>
+              -->
+          </li>
           <li></li>
           <li>Г. ДНЕПРОПЕТРОВСК </li>
           <li>УЛ.БУЛЫГИНА, 10 А</li>
@@ -96,8 +99,11 @@ baseUrl ='<?=Yii::$app->request->baseUrl;?>';
       <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 text-center-xs">
           <h3 class="footer">интернет-магазин</h3>
         <ul>
-          <li>ТЕЛ.: <?=Settings::findOne(['name'=>'Телефон3'])->value;?> <br/>
-              ТЕЛ.: <?=Settings::findOne(['name'=>'Телефон4'])->value;?></li>
+          <li><!--
+              ТЕЛ.: <?=Settings::findOne(['name'=>'Телефон3'])->value;?> <br/>
+              ТЕЛ.: <?=Settings::findOne(['name'=>'Телефон4'])->value;?>
+              -->
+          </li>
           <li></li>
           <li>E-MAIL: <?=Settings::findOne(['name'=>'email'])->value;?></li>
           <li>SKYPE: <?=Settings::findOne(['name'=>'skype'])->value;?></li>

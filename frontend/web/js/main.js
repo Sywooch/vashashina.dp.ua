@@ -9,16 +9,31 @@ $('select.dropdown').easyDropDown();
 $('#logoPhones').click(function(){
     var first =  $(this).children('span.phone:first-child');
   
-     var childs = $(this).children('span.phone');
+     var childs = $(this).children('span.phone').not(first);
      
     if (first.hasClass('first')){
-    first.removeClass('first'); 
+    first.removeClass('first');
+    first.hide();
     childs.show('slow');
+    addPhonesShow();
     }else{
         childs.hide();
-        first.addClass('first').removeAttr('style'); 
+        first.addClass('first').removeAttr('style');
+        first.show();
     }
 });
+
+function addPhonesShow(){
+    $.ajax({
+       url:baseUrl+'/site/add-phones-show'+suffix,
+       type:'POST',
+       dataType:'json',
+       success:function(data){
+           console.log(data);
+       }
+    });
+}
+
 $(function () {
     $("[data-toggle='tooltip']").tooltip(); 
 });

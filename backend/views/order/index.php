@@ -9,6 +9,8 @@ use yii\grid\GridView;
 
 $this->title = Yii::t('app', 'Orders');
 $this->params['breadcrumbs'][] = $this->title;
+$locale=setlocale(LC_ALL, "ru_RU.utf8");
+
 ?>
 <?php echo \backend\widgets\alerts\Alerts::widget();?>
 <div class="order-index">
@@ -19,7 +21,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a(Yii::t('app', 'Create Order'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
+    <?php if(Yii::$app->request->get('OrderSearch')
+        && isset(Yii::$app->request->get('OrderSearch')['month'])):?>
+    <p>Период заказов: <?=strftime("%B %Y",strtotime(Yii::$app->request->get('OrderSearch')['month']));?>.</p>
+    <p>Сумма заказов: <?=Yii::$app->formatter->asCurrency($orderSum);?>.</p>
+    <?php endif;?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -36,13 +42,17 @@ $this->params['breadcrumbs'][] = $this->title;
                      ['label'=> Yii::t('app', 'Product'),
               'value' =>  function($model){
                             $string ='';
+                            $count = count($model->productsPerOrder);
                             foreach($model->productsPerOrder as $id => $productPerOrder){
                                 
                     $string .= $productPerOrder->product->category->title.' '
                               .$productPerOrder->product->title.'<br/>'
                               .' Кол-во: '.$productPerOrder->quantity.'; Цена: '
                               .Yii::$app->formatter->asCurrency($productPerOrder->price)
-                              .'; Сумма: '.Yii::$app->formatter->asCurrency($productPerOrder->subtotal).'<br/>';            
+                              .'; Сумма: '.Yii::$app->formatter->asCurrency($productPerOrder->subtotal).'<br/>';
+                                if ($id+1 < $count){
+                                    $string .='<span class="d-line"></span>';
+                                }
                             }
                    return $string;
             },'format'=>'raw'],
@@ -52,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                ['attribute'=> 'payment_status',
                		'value'=>function($model){return Yii::t('app',$model->payment_status);},
                		'filter'=>['cancelled'=>Yii::t('app','cancelled'),'pending'=>Yii::t('app','pending')
-               				,'paid'=>Yii::t('app','paid')]],
+               				,'completed'=>Yii::t('app','completed')]],
               ['attribute'=> 'delivery_status','value'=>function($model){return Yii::t('app',$model->delivery_status);}],
             // 'sposob_oplati',
             // 'sposob_dostavki',

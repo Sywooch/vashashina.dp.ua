@@ -90,9 +90,9 @@ if ($_GET['type'] == 'Disks'){
 ?>
     </p>
 <p>Информация о прайсе поставщика:<br/>
-Количество  наших позиций <?=Yii::t('app',$_GET['type']);?> - <?=$model::find()->count()?><br/> 
-Количество позиций в прайсе - <?=$supplierModel::find()->count()?><br/>
-Количество незаполненных позиций <?=Yii::t('app',$_GET['type']);?> в прайсе поставищка - <?=$supplierModel::find()->where($where)->count()?>
+    Количество  наших позиций <strong><?=Yii::t('app',$_GET['type']);?></strong> в прайсе Поставщика - <?=$model::find()->count()?><br/> 
+Количество позиций в прайсе Поставщика - <?=$supplierModel::find()->count()?><br/>
+Количество незаполненных позиций <strong><?=Yii::t('app',$_GET['type']);?></strong> в прайсе поставищка - <?=$supplierModel::find()->where($where)->count()?>
 <br/>
 
 </p>

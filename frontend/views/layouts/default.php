@@ -54,7 +54,8 @@ echo Nav::widget([
         <div class="col-sm-4 logo">
           <h1><?=html::a('ВАША ШИНА',['/']);?></h1>
           <div id="logoPhones" <?=$phonesClass ;?>>
-              <span class="phone first"><?=Settings::findOne(['name'=>'Телефон1'])->value;?></span>
+          <span class="phone first">+38 (0xx) - показать</span>
+          <span class="phone"><?=Settings::findOne(['name'=>'Телефон1'])->value;?></span>
           <span class="phone"><?=Settings::findOne(['name'=>'Телефон2'])->value;?></span>
           <span class="phone"><?=Settings::findOne(['name'=>'Телефон3'])->value;?></span>
           <span class="phone"><?=Settings::findOne(['name'=>'Телефон4'])->value;?></span>

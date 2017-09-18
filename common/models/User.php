@@ -6,6 +6,7 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use common\models\LoginsLog;
 
 /**
  * User model
@@ -94,7 +95,15 @@ class User extends ActiveRecord implements IdentityInterface
     	
     }/**/
     
-    public function beforeSave($insert){
+    public function init() {
+        
+        $user = \Yii::$app->user;
+        $user->on($user::EVENT_AFTER_LOGIN, [$this, 'afterLogin']);
+        
+        return parent::init();
+    }
+
+        public function beforeSave($insert){
     	
     	if ($insert){
     		$this->setPassword($this->pass);}else{
@@ -138,7 +147,14 @@ class User extends ActiveRecord implements IdentityInterface
     	return parent::afterDelete();
     }/**/
     
-    public function getUserRole(){
+    public function afterLogin(){
+        $model = new LoginsLog();
+        $model->save();
+      
+        
+    }/**/
+
+        public function getUserRole(){
      $roleArray =	Yii::$app->authManager->getRolesByUser($this->id);
      foreach ($roleArray as $role)
      	$userRole = $role;

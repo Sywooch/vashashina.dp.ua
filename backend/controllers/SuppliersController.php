@@ -13,13 +13,23 @@ class SuppliersController extends \backend\components\AdminController {
 	public $supplier;
 	private $supDir = 'backend\models\suppliers\\';
 	private $supDirSearch = 'backend\models\suppliers\search\\';
-	
-	public function behaviors()
+        private $_event;
+        
+        const EVENT_AFTER_UPDATE_SUPPLIER_PRICE = 'afterUpdateSupplierPrice';
+        const EVENT_AFTER_UPDATE_PRICE = 'afterUpdatePrice';
+
+        public function init() {
+        
+            
+            return parent::init();
+        }/**/
+
+        public function behaviors()
 	{
 		return array_merge(parent::behaviors(),[
 				
 		]);
-	}
+	}/**/
 	
 	
 	public function actionDeactivateSupplierPrice($supplier,$type) {
@@ -134,8 +144,7 @@ class SuppliersController extends \backend\components\AdminController {
 					$obj = new \PHPExcel ();
 					$reader = \PHPExcel_IOFactory::load ( $filePath . $file->baseName . '.' . $file->extension );
 					$xls = $reader->getActiveSheet ()->toArray ( null, true, true, true );
-					
-					foreach ($xls[1] as $key =>$value){
+                    foreach ($xls[1] as $key =>$value){
 						if ($value){
 						$xls[1][$key] = trim($value);
 						} else {unset($xls[1][$key]);}
@@ -143,20 +152,32 @@ class SuppliersController extends \backend\components\AdminController {
 				//	var_dump($xls[1]);die;
 					$supplier = $this->supDir . $model->supplier.$model->type;
 					$supplier = new $supplier ();
-					
+                    $labels = $supplier->attributeLabels ();
+                    unset($labels['status']);
+                    unset($labels['created_at']);
+                    unset($labels['updated_at']);
+                    unset($labels['created_by']);
+                    unset($labels['LastUpdatedBy']);
 					if (in_array ( 'ID', $xls [1] )) {
-						// var_dump($xls[1]);
+					//	 var_dump($xls[1]);die;
 						$columns = $xls [1];
-					
-						// var_dump($columns);die;
-						unset ( $xls [1] );
-						$labels = $supplier->attributeLabels ();
-						$labels = array_flip ( $labels );
-						foreach ( $columns as $key => $col ) {
-							$columns [$key] = $labels [$col];
+
+						$labelsFlip = array_flip ( $labels );
+                     //   var_dump($labels);die;
+						foreach ( $xls [1] as $letter => $val ) {
+							$columns [$letter] = \yii\helpers\Html::dropDownList('columns['.$letter.']',$labelsFlip[$val],$labels,
+                                ['class'=>'form-control']);
 						} // end foreach
-					}
-					// var_dump($columns);die;
+                        unset($xls [1]);
+					} else{
+                     
+                        foreach($xls[1] as $letter => $val){
+                          $columns[$letter] = \yii\helpers\Html::dropDownList('columns['.$letter.']','',$labels,
+                              ['class'=>'form-control']);
+                        }
+
+                    }
+				//	 var_dump($columns);die;
                                         // var_dump($xls);die;
 					// $data = $obj-> readActiveSheet($filePath. $file->baseName . '.' . $file->extension);
 					return $this->render ( 'import_xls', [ 
@@ -164,7 +185,7 @@ class SuppliersController extends \backend\components\AdminController {
 							'columns' => $columns,
 							'supplyModel' => $model->supplier,
 							'labels'=>$supplier->attributeLabels (),
-                                                        'type'=>$model->type,
+                            'type'=>$model->type,
 					] );
 				}
 			}
@@ -175,66 +196,81 @@ class SuppliersController extends \backend\components\AdminController {
 			$count = 0;
 			$data = Yii::$app->request->post ();
 			$supplier = $data ['supplyModel'];
-                        $type = $data ['type'];
+            $type = $data ['type'];
+            $columns = $data['columns'];
 			$supplierModel = $this->supDir . $supplier.$type;
 			$db = Yii::$app->db;
 			//var_dump($data);die;
 			unset ( $data ['fileType'] );
 			unset ( $data ['csvgo'] );
-			unset ( $data ['_csrf'] );
+			unset ( $data ['_backendCSRF'] );
 			unset ( $data ['supplyModel'] );
-                        unset ( $data ['type'] );
-		//	var_dump($data);die;
+            unset ( $data['columns']);
+            unset ( $data ['type'] );
+		//	var_dump($columns,$data);die;
 			foreach ( $data as $row ) {
 				$count++;
-				if (isset($row[$supplier.$type]['data_obnovleniya_sklada'])){
-					$row[$supplier.$type]['data_obnovleniya_sklada'] = strtotime($row[$supplier.$type]['data_obnovleniya_sklada']);
-				//	$row['data_obnovleniya_sklada'] = date("Y-m-d H:i:s",$row['data_obnovleniya_sklada']);
-				}
-			//	var_dump($row);die;
-			
-		//	var_dump($id);die;
-				if (isset( $row [$supplier.$type]['id'])){
-				$id = $db->createCommand('SELECT id FROM '.$supplierModel::tableName().' WHERE id = :id',
-						[':id'=>$row [$supplier.$type]['id']])->queryScalar();
-			//	var_dump($id);die;
-                                $insert = FALSE;
-                                $update = FALSE;
-				if ($id){
-					unset($row [$supplier.$type]['id']);
-				$update =	$db->createCommand()
-                                        ->update($supplierModel::tableName(), $row [$supplier.$type], 'id = '.$id)
-                                        ->execute();
-			//	var_dump($update);//die;
-				} else{
-				$insert = $db->createCommand()
-                                        ->insert($supplierModel::tableName(), $row [$supplier.$type])
-                                        ->execute();
-				}
-				if ($update) $countUpdated++;
-				}// id isset id
-				else{
-					$insert =	$db->createCommand()
-                                                ->insert($supplierModel::tableName(),$row [$supplier.$type])
-                                                ->execute();
-				}
-				if ($insert) $countNew++;
-		//		var_dump($update);die;
-				
-		
-				
+                foreach ($row[$supplier.$type] as $letter => $col) {
+                    $attributes[$columns[$letter]] = $col;
+                    if ($columns[$letter] == 'data_obnovleniya_sklada') {
+                        $attributes[$columns[$letter]] = strtotime($col);
+                        //	$row['data_obnovleniya_sklada'] = date("Y-m-d H:i:s",$row['data_obnovleniya_sklada']);
+                    }
+                    //	var_dump($row);die;
+
+                } // endforeach;
+                    if (isset($attributes['id']) ) {
+                        $id = $db->createCommand('SELECT id FROM ' . $supplierModel::tableName() . ' WHERE id = :id',
+                            [':id' => $attributes['id']])->queryScalar();
+                        //	var_dump($id);die;
+                        $insert = FALSE;
+                        $update = FALSE;
+                        if ($id) {
+                            unset($attributes['id']);
+                            $update = $db->createCommand()
+                                ->update($supplierModel::tableName(),$attributes, 'id = ' . $id)
+                                ->execute();
+                            //	var_dump($update);//die;
+                        } else {
+                            $insert = $db->createCommand()
+                                ->insert($supplierModel::tableName(), $attributes)
+                                ->execute();
+                        }
+                        if ($update) $countUpdated++;
+                    }// if isset id
+                    else {
+                        $insert = $db->createCommand()
+                            ->insert($supplierModel::tableName(), $attributes)
+                            ->execute();
+                    }
+                    if ($insert) $countNew++;
+                    //		var_dump($update);die;
+
+
 			} // endforeach;
+                       $message = '';
+                       $status = '';
 			//var_dump(count($errors));
 			if (($countUpdated + $countNew) == $count) {
-				Yii::$app->session->setFlash ( 'success', 'Импортирование прошло успешно.'. 
+                            $status = 'success';
+                            $message = 'Импортирование прошло успешно.'. 
         				'Импортировано ' . $count . ' позиций, в т.ч. обновлено '.$countUpdated.','
-        						.' добавленно новых '.$countNew );
+        						.' добавленно новых '.$countNew;
+				Yii::$app->session->setFlash ( $status, $message );
 			} else {
-				Yii::$app->session->setFlash ( 'warning', 
-        				' Импортировано ' . ($countUpdated + $countNew) . ' позиций из '.$count.'. Возможно Вы просто ввели такие же данные!!!' );
+                              $status = 'warning';
+                            $message = ' Импортировано ' . ($countUpdated + $countNew) 
+                                    . ' позиций из '.$count.'. Возможно Вы просто ввели такие же данные!!!';
+				Yii::$app->session->setFlash ( $status,$message);
 			}
 	
-		//	die;
+		 $this->_event = new \backend\events\UpdatePriceEvent();
+                $this->_event->message = $message;
+                $this->_event->status = $status;
+                $this->_event->price = $type;
+                $this->_event->supplier = $supplierModel;
+             $this->on(self::EVENT_AFTER_UPDATE_SUPPLIER_PRICE, [$this->_event,self::EVENT_AFTER_UPDATE_SUPPLIER_PRICE]);
+		 $this->trigger(self::EVENT_AFTER_UPDATE_SUPPLIER_PRICE, $this->_event);
 			return $this->redirect ( [ 
 					'/suppliers/view',
 					'supplier' => $supplier,
@@ -248,6 +284,8 @@ class SuppliersController extends \backend\components\AdminController {
 	}/**/
 
 	public function actionUpdatePrice($supplier,$type) {
+            $message = NULL;
+            $status = Null;
 		$supModel = $this->supDir.$supplier.$type;
 	//	$errors = [];
                      $select = 'vykhodnaya_roznichnaya_cena as price,ostatok as quantity';
@@ -269,7 +307,11 @@ class SuppliersController extends \backend\components\AdminController {
                     case "Product":
                         break;
                 }
-		$supPositions = $supModel::find()->select($select)->where($where)->asArray()->all();
+		$supPositions = $supModel::find()->select($select)
+                        ->where($where)
+                    
+                        ->asArray()
+                        ->all();
                 $countSP = count($supPositions);
              //   var_dump($supPositions);
 		if ($countSP>0){
@@ -294,8 +336,6 @@ class SuppliersController extends \backend\components\AdminController {
                   Yii::$app->session->setFlash ( 'warning', 'Нет позиций для обновления' );  
                 }
 			
-	//	var_dump($erorrs);die;
-		
 			
 		return $this->redirect ( [
 				'/suppliers/view',
@@ -336,7 +376,7 @@ class SuppliersController extends \backend\components\AdminController {
                                 'type'=>$type,
 		] );
 	}/**/
-public function       actionUpdateOurPositions($supplier,$type,$update){
+public function actionUpdateOurPositions($supplier,$type,$update){
     $this->supplier = $supplier;
         
     $count = 0;
@@ -437,7 +477,8 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
                 break;
         }
                     $supBrands = $supplierModel::find()->select('DISTINCT(brend)')
-                                    ->where('(:column IS Null OR :column = 0) AND (ostatok > 0)',[':column'=>$column])
+                                    ->where('(:column IS Null OR :column = 0) ',[':column'=>$column])
+                                    ->andWhere('brend IS NOT Null')
                                     ->asArray()
                                     ->all();
                       //  $brands = \common\models\tires\TireManufacturer::find()->select('DISTINCT(title)')->asArray()->all();
@@ -450,20 +491,35 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
                                 $brand = new $model;
                                 $brand->title = $supBrand['brend'];
                              //   echo $brand->title.'<br/>';
-                                if ($brand->save()){
-                                  
+                                if ($brand->save()){                
                                     $count++;
                                 } else{
                                  $errors[] = $brand->errors;
                                 }
                             }
-                        }
-                        if ($count > 0){
-                          Yii::$app->session->setFlash ( 'success', 'Обновлено '.$count.' позиций производителей шин! ' );
-                        } elseif ($count == 0) {
-                     Yii::$app->session->setFlash ( 'warning', 'Обновлено '.$count.' позиций производителей ! Ошибок: '.count($errors) );   
+                        }// end foreach
                         
-                    }
+                        $status = '';
+                        $message = '';
+                     //   var_dump($errors);die;
+                        if (count($errors)== 0){
+                          $status = 'success';
+                          $message =  'Обновлено '.$count.' позиций производителей шин!';
+                                 } elseif(count($errors) > 0){
+                            $status = 'warning';
+                            $message = 'Обновлено '.$count.' позиций производителей ! Ошибок: '.count($errors).PHP_EOL;
+                            foreach ($errors as $k =>$errs){
+                            foreach ($errs as $field => $error){
+                                $message .= $error;
+                            }
+                           
+                                
+                            }    
+                    }  else{
+                        $status = 'info';
+                        $message = 'Все бренды уже добалвены';
+                            }
+                      Yii::$app->session->setFlash ($status ,$message );   
     }/**/
     
     private function updateModels($supplierModel,$type, $all=FALSE){
@@ -473,14 +529,14 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
             $singular = 'Tire';   
             $column = new \yii\db\Expression('tire_id');
             $model = '\common\models\tires\TireManufacturer';
-            $fields = ['brend', 'model', 'sezon', 'tip_transportnogo_sredstva','fajjl_izobrazhenie'];
+            $fields = ['id','brend', 'model', 'sezon', 'tip_transportnogo_sredstva','fajjl_izobrazhenie'];
             $function = 'updateTireModels';
              break;
             case "Disks":
                     $singular = 'Disk';   
                $column = new \yii\db\Expression('disk_id');
                $model = '\common\models\disks\DiskManufacturer';
-               $fields = ['brend', 'model', 'tip', 'color', 'kol_otverstiy', 'fajjl_izobrazhenie'];
+               $fields = ['id','brend', 'model', 'tip', 'color', 'kol_otverstiy', 'fajjl_izobrazhenie'];
                                                                    
                    $function = 'updateDiskModels';
                 break;
@@ -488,7 +544,7 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
           // выбираем все модели
                         $supModels = $supplierModel::find()
                                     ->select($fields)
-                                    ->where('('.$column.' IS Null OR '.$column.' = 0) AND (ostatok > 0)')
+                                    ->where('('.$column.' IS Null OR '.$column.' = 0) ')
                                     ->asArray()
                                 //    ->limit(1000)
                                     ->all();
@@ -539,7 +595,7 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
        $supItems = $supplierModel::find()
                                     ->select($fields)
                                     ->orderBy($column.' ASC')
-                                    ->where('('.$column.' IS Null OR '.$column.' = 0) AND (ostatok > 0)')
+                                    ->where('('.$column.' IS Null OR '.$column.' = 0)')
                                     ->asArray()
                                     ->all();
     //  var_dump($supItems);die;
@@ -548,8 +604,9 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
     }/**/
     
     private function updatePrices($supplierModel,$type){
-        
-         $count = 0;
+        $message =  '';
+        $status = '';
+        $count = 0;
         $errors = [];
         
         switch( $type) {
@@ -567,12 +624,13 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
                 break;
         }
           $supItems = $supplierModel::find()
-                                    ->select([$column,
+                                    ->select([$column,'id',
                                               'vykhodnaya_roznichnaya_cena as price',
                                               'ostatok as quantity',
                                              ])
                                     ->where('('.$column.' > 0) AND (ostatok > 0) AND (vykhodnaya_roznichnaya_cena > 0)')
                                     ->orderBy($column.' DESC')
+                              //      ->limit(1)
                                     ->asArray()
                                     ->all();
           
@@ -595,14 +653,27 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
                                     
                                 }// endforeach
                                   if ($count > 0 && (count($errors)== 0)){
-                          Yii::$app->session->setFlash ( 'success', 'Обновлено '.$count.' цен наших шин! ' );
+                                      $message =  'Обновлено '.$count.' цен наших шин! ';
+                                      $status = 'success';
+                          Yii::$app->session->setFlash ( $status, $message);
                         }else{
                             var_dump($errors);
                         }
-    }
+         
+                $this->_event = new \backend\events\UpdatePriceEvent();
+                $this->_event->message = $message;
+                $this->_event->status = $status;
+                $this->_event->price = $type;
+                $this->_event->supplier = $supplierModel;
+             $this->on(self::EVENT_AFTER_UPDATE_PRICE, [$this->_event,self::EVENT_AFTER_UPDATE_PRICE]);
+		 $this->trigger(self::EVENT_AFTER_UPDATE_PRICE, $this->_event);
+                        
+    }/**/
     
     private function updateTireModels($supModels){
           $count = 0;
+          $status = '';
+          $message = '';
         $errors = [];
                                     foreach ($supModels as $supTireModel){
                                 $brandID = $this->getBrandID($supTireModel['brend'],'Tire');
@@ -628,7 +699,9 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
                                      //   ->asArray()
                                         ->one();
                                         }else {
-                                         var_dump($supTireModel);  
+									//		echo "<pre>";
+                                    //     var_dump($supTireModel); 
+									//		echo "</pre>";										 
                                         }
                                 // Если есть такая модель
                                 if (isset ($tireModel->title) && $tireModel->title ){
@@ -652,25 +725,46 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
                                             }
                                     }//end if validate
                                     else{
-                                        $errors[]=$tireModel->errors;
+									//	var_dump($supTireModel);
+                                        $errors[$supTireModel['id']]=$tireModel->errors;
                                     }
                                 }
                                
                             }// end if brandID
                               else{
-                        
-                          Yii::$app->session->setFlash ( 'danger', 'Для некоторых шин не найдены производители  ' );
+                            //      var_dump($supTireModel);die;
+                        $status = 'danger';
+                        $message .= 'Для шины '.$supTireModel['id'].' не найдены производитель'.PHP_EOL;
+                       
                                  
                             }
                        //      var_dump($tireModel);
-                            } 
+                            } // end foreach
                          
                            if ($count > 0 && (count($errors)== 0)){
-                          Yii::$app->session->setFlash ( 'success', 'Обновлено '.$count.' моделей наших шин! ' );
+                            $status = 'success';
+                            $message .= 'Обновлено '.$count.' моделей наших шин! ';
+                         
                         }  else {
-                       Yii::$app->session->setFlash ( 'warning', 'Обновлено '.$count.' моделей наших шин! '
-                               . 'Ошибок: '.count($errors) );      
-                        }       
+							//var_dump($errors);die;
+			$message = 'Обновлено '.$count.' моделей наших шин! '.PHP_EOL;
+			$message .= 'Ошибок: '.count($errors).PHP_EOL;
+			
+							foreach ($errors as $smID =>$error){
+			$message .= "ID модели Поставщика: ".$smID.PHP_EOL;
+			
+								foreach($error as $err){
+									foreach ($err as $er){
+			$message .= $er.PHP_EOL;
+			
+									}								
+								}
+							}
+                                                        $status = 'warning';
+                                                                        
+                        }
+                        $message = nl2br($message);
+                          Yii::$app->session->setFlash ( $status, $message);   
                             
     }/**/
     
@@ -697,7 +791,7 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
                              
                                 
                                  if(!$car_type_id){
-                                     var_dump($supItem['tip_transportnogo_sredstva']);die;
+                               //      var_dump($supItem);die;
                                  }
                                  
                                  
@@ -763,38 +857,57 @@ public function       actionUpdateOurPositions($supplier,$type,$update){
                                         ->update($supplierModel::tableName(), ['tire_id'=> $model->id], 'id = '.$supItem['id'])
                                         ->execute();       
                                      if( !$update){
-                                      var_dump($update);
+                                //      var_dump($update);
                                      }
                                   }
                          }
                         } else {
                         // validation failed: $errors is an array containing error messages
                         $errors[$model->id] = $model->errors;
-                        var_dump($errors);
+                      //  var_dump($errors);
                         }
                        //     var_dump($model);
                             }// end if in excludes
                             else {
-                                $doubles[] = 'Попытка создания дубликата нашей позиции.<br/>'
+                                $doubles[] = 'Попытка создания дубликата нашей позиции.'.PHP_EOL
                                         .'Наш ID'.$model->id.'('.$model->tireModel->fullTitle.')'
-                                        . ' ID поставщика '.$supItem['id'].'<br/>';
+                                        . ' ID поставщика '.$supItem['id'].PHP_EOL;
                             }
                                 }// end if model ID
                                 
                         }// end if brand ID
                         }// end foreach supItems
+                        $message = '';
+                        $status = '';
                   if ($count > 0 && (count($errors)== 0) && (count($doubles)== 0) ){
-                          Yii::$app->session->setFlash ( 'success', 'Обновлено '.$count.' позиций наших шин! ' );
-                        } elseif (count($doubles)> 0) {
-                            $message = 'Обновлено '.$count.' позиций наших шин!<br/>';
-                            $message .= 'Найдено '.count($doubles).' дубликатов <br/>';
+                      $status = 'success';
+                      $message =  'Обновлено '.$count.' позиций наших шин! ';
+                        
+                 } else {
+                        $status = 'warning';
+                            $message .= 'Обновлено '.$count.' позиций наших шин!'.PHP_EOL;
+                 if (count($doubles)> 0) {
+                  
+                            $message .= 'Найдено '.count($doubles).' дубликатов '.PHP_EOL;
                             foreach($doubles as $double){
                              $message .= $double;   
                             }
-                        Yii::$app->session->setFlash ( 'warning', $message);
+                     
                            
-                        }  
-        
+                        } // end if doubles  
+                         if (count($errors)> 0) {
+                   
+                            $message .= 'Найдено '.count($errors).' дубликатов '.PHP_EOL;
+                            foreach($errors as $k => $err){
+                                  foreach($err as $field => $error){
+                             $message .= $k.' '.$error;   
+                            }
+                            }
+                           
+                        } // end if errors
+                 }
+                        $message = nl2br($message);
+           Yii::$app->session->setFlash ( $status, $message);
     }/**/
     
     private function updateDiskItems($supItems,$supplierModel){

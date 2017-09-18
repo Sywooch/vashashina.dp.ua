@@ -54,7 +54,7 @@ class Tire extends \yii\db\ActiveRecord
             [['model_id'],'required'],
             [['price', 'discount'], 'number'],
             [['full_title'], 'string', 'max' => 255],
-            [['width', 'profile', 'diameter', 'max_load', 'max_speed','tip_shiny'],'string', 'max' => 11],
+            [['width', 'profile', 'diameter', 'max_load', 'max_speed','tip_shiny'],'string', 'max' => 25],
             [['ship'], 'string', 'max' => 7],
             [['usilennaya'], 'string', 'max' => 5],
         //	[['discount_begin', ],'date','timestampAttribute'=>'discount_begin'],

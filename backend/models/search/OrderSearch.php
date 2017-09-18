@@ -12,6 +12,7 @@ use common\models\Order;
  */
 class OrderSearch extends Order
 {
+    public $month;
     /**
      * @inheritdoc
      */
@@ -20,7 +21,7 @@ class OrderSearch extends Order
         return [
             [['id', 'customer_id', 'sposob_oplati', 'sposob_dostavki', 'created', 'updated', 'manager_id', 'email'], 'integer'],
             [['suma'], 'number'],
-            [['payment_status', 'delivery_status', 'memo'], 'safe'],
+            [['payment_status', 'delivery_status', 'memo','month'], 'safe'],
         ];
     }
 
@@ -46,6 +47,7 @@ class OrderSearch extends Order
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['created'=>SORT_DESC]]
         ]);
 
         $this->load($params);
@@ -72,6 +74,12 @@ class OrderSearch extends Order
             ->andFilterWhere(['like', 'delivery_status', $this->delivery_status])
             ->andFilterWhere(['like', 'memo', $this->memo]);
 
+       if ($this->month){
+           $query->andWhere('FROM_UNIXTIME(created, \'%Y-%m\') >= :month
+AND FROM_UNIXTIME(created, \'%Y-%m\') <= :month',[':month'=>$this->month]);
+       }
+
         return $dataProvider;
-    }
-}
+    }/**/
+    
+}/* end of Model */
